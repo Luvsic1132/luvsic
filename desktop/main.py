@@ -1875,6 +1875,12 @@ class Api:
         uid = str(d.get("id") or "")
         if re.match(r"^\d{8}$", uid):
             return uid
+        # 旧版本可能是 u 开头或 uuid：迁移成 8 位数字，保证好友/排行榜可用
+        if uid and not re.match(r"^\d{8}$", uid):
+            import random
+            d["id"] = "%08d" % random.randint(10_000_000, 99_999_999)
+            _save_json(USER_PATH, d)
+            return d["id"]
         # 自愈：user.json 的 id 意外丢失时，从 sync.json 冗余的 userId 恢复
         c = self._sync_conf()
         sid = str(c.get("userId") or "")
@@ -1883,9 +1889,11 @@ class Api:
             _save_json(USER_PATH, d)
             return sid
         if not d.get("id"):
-            import uuid
-            d["id"] = "u" + uuid.uuid4().hex[:14]
+            # 生成 8 位数字 ID：好友码、排行榜等功能都要求 8 位
+            import random
+            d["id"] = "%08d" % random.randint(10_000_000, 99_999_999)
             _save_json(USER_PATH, d)
+            return d["id"]
         return d["id"]
 
     def _remote_path(self, name):
