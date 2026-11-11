@@ -1,0 +1,32 @@
+﻿# 运行时数据（配置、曲库缓存、歌词缓存、同步令牌）
+data/
+*.log
+*.pyc
+__pycache__/
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 安卓构建产物与签名（不入库）
+android/build/
+android/dist/
+android/assets/ui/
+android/*.keystore
+android/keystore.properties
+*.apk
+*.jks
+
+# ══ 运行时数据（绝不上传：含设备 ID / 用户 ID / 曲库路径 / 日志）══
+desktop/data/
+android/data/
+data/
+
+# 安卓构建产物（构建时从 ../ui 复制，不入库）
+android/assets/ui/
+android/assets/
+
+# 打包配置与图标（含本机路径）
+*.spec
