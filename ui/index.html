@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Luvsic</title>
+<link rel="icon" type="image/png" sizes="256x256" href="icon.png?v=6">
+<link rel="apple-touch-icon" href="icon.png?v=6">
+<link rel="stylesheet" href="style.css?v=20">
+</head>
+<body>
+
+<!-- ══════════════ 启动动画 ══════════════ -->
+<div id="boot">
+  <canvas id="bootCanvas"></canvas>
+  <div class="boot-rays"></div>
+  <div class="boot-scan"></div>
+  <div class="boot-core">
+    <div class="boot-sigil">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f3ddbe"/>
+            <stop offset="55%" stop-color="#e0b98f"/>
+            <stop offset="100%" stop-color="#8d7bdd"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="43" fill="none" stroke="url(#sg)" stroke-width="0.7" opacity=".5"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="url(#sg)" stroke-width="0.5" opacity=".28"
+                stroke-dasharray="2 7"/>
+        <path d="M60 26 L86 60 L60 94 L34 60 Z" fill="none" stroke="url(#sg)" stroke-width="1.1"/>
+        <path d="M60 42 L74 60 L60 78 L46 60 Z" fill="url(#sg)" opacity=".16"/>
+        <circle cx="60" cy="60" r="2.4" fill="#f7e8d2"/>
+      </svg>
+      <span class="sigil-ring"></span>
+      <span class="sigil-ring r2"></span>
+      <span class="sigil-orbit"><i></i></span>
+    </div>
+
+    <div class="boot-word" id="bootWord">
+      <span>L</span><span>U</span><span>V</span><span>S</span><span>I</span><span>C</span>
+    </div>
+
+    <div class="boot-slogan">
+      <span class="bs-line bs-1">进入 <em>Luvsic</em></span>
+      <span class="bs-rule"></span>
+      <span class="bs-line bs-2">邂逅那些你 <em>miss</em> 的音乐</span>
+    </div>
+
+    <div class="boot-meter">
+      <div class="meter-track"><i id="bootBar"></i></div>
+      <div class="meter-row">
+        <span id="bootLog" class="boot-log">· 载入音频引擎</span>
+        <span id="bootPct" class="boot-pct">00</span>
+      </div>
+    </div>
+  </div>
+  <div class="boot-skip" id="bootSkip">轻触任意处进入</div>
+</div>
+
+<!-- ══════════════ 主界面 ══════════════ -->
+<div id="app">
+
+  <div id="bg">
+    <div class="bg-wall" id="bgWallA"></div>
+    <div class="bg-wall" id="bgWallB"></div>
+    <div class="bg-art" id="bgArt"></div>
+    <div class="bg-veil"></div>
+    <div class="bg-grain"></div>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+  </div>
+
+  <!-- 画框 -->
+  <div id="frame" aria-hidden="true"></div>
+
+  <!-- 电脑版左侧导航栏（手机版隐藏） -->
+  <nav id="pcRail" aria-label="主导航">
+    <button class="rail-btn on" data-go="home" title="首页">
+      <svg viewBox="0 0 24 24"><path d="M4 11.5L12 4l8 7.5"/><path d="M6.5 10.5V20h11v-9.5"/></svg>
+      <span>首页</span>
+    </button>
+    <button class="rail-btn" data-go="music" title="正在播放 / 歌词">
+      <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg>
+      <span>音乐</span>
+    </button>
+    <button class="rail-btn" data-go="lib" title="曲库">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+      <span>曲库</span>
+    </button>
+    <button class="rail-btn" data-go="settings" title="设置">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+      <span>设置</span>
+    </button>
+  </nav>
+
+  <!-- 电脑版首页（进入后先看这个） -->
+  <section id="pcHome" aria-hidden="true">
+    <div class="pc-home-inner">
+      <div class="pc-sigil">
+        <svg viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="40" fill="none" stroke="rgba(228,194,154,.35)" stroke-width=".8"/>
+          <circle cx="60" cy="60" r="28" fill="none" stroke="rgba(228,194,154,.22)" stroke-width=".8"/>
+          <path d="M60 34L82 60L60 86L38 60Z" fill="none" stroke="rgba(228,194,154,.7)" stroke-width="1"/>
+          <circle cx="60" cy="60" r="2.6" fill="#F8DFB4"/>
+        </svg>
+      </div>
+      <div class="pc-brand">LUVSIC<i></i></div>
+      <div class="pc-slogan">在这里，听你的歌</div>
+      <div class="pc-cards">
+        <button class="pc-card" data-go="music">
+          <b>音乐</b><span>正在播放 / 歌词</span>
+        </button>
+        <button class="pc-card" data-go="lib">
+          <b>曲库</b><span>本地歌曲 / 歌单</span>
+        </button>
+        <button class="pc-card" data-go="settings">
+          <b>设置</b><span>音效 / 播放 / 外观</span>
+        </button>
+        <button class="pc-card" id="pcFriendsCard" data-go="friends">
+          <b>好友与排行</b><span>好友码 / 听歌时长排行榜</span>
+        </button>
+        <button class="pc-card" id="pcAdminCard" data-go="admin" style="display:none">
+          <b>账号管理</b><span>谁在用你的账号ID / 登录权限 / 备注</span>
+        </button>
+      </div>
+      <div class="pc-tip">LUVSIC · 左侧栏可随时切换界面</div>
+    </div>
+  </section>
+
+  <!-- 标题栏 -->
+  <header id="titlebar">
+    <div class="tb-mark">LUVSIC<i></i></div>
+    <div class="tb-drag pywebview-drag-region" id="tbDrag"></div>
+    <div class="tb-actions">
+      <button class="tbtn" id="btnQueue" title="播放列表">
+        <svg viewBox="0 0 24 24"><path d="M4 7h11M4 12h11M4 17h7"/><path d="M18 15.5a2.2 2.2 0 104.4 0 2.2 2.2 0 00-4.4 0z" stroke-width="1.4"/><path d="M20 15.5V9l3-1"/></svg>
+      </button>
+      <button class="tbtn" id="btnTune" title="音质与调校">
+        <svg viewBox="0 0 24 24"><path d="M5 20V10M5 6V4M12 20v-6M12 10V4M19 20v-9M19 7V4"/><circle cx="5" cy="8.5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="9.5" r="1.7"/></svg>
+      </button>
+      <button class="tbtn" id="btnSettings" title="设置">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ── 舞台 ── -->
+    <section class="stage">
+
+      <div class="art-wrap">
+        <div class="art-halo" id="artHalo"></div>
+        <div class="art" id="artBox">
+          <div class="art-img" id="artImg"></div>
+          <canvas id="viz" width="640" height="640"></canvas>
+          <div class="art-empty" id="artEmpty">
+            <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg>
+          </div>
+          <div class="art-shine"></div>
+        </div>
+        <div class="art-ring"></div>
+      </div>
+
+      <div class="meta">
+        <div class="meta-eyebrow" id="srcTag">本地曲库</div>
+        <h1 class="meta-title" id="mTitle">暂无曲目</h1>
+        <div class="meta-artist" id="mArtist">选择你的音乐文件夹</div>
+        <div class="meta-album" id="mAlbum"></div>
+      </div>
+
+      <div class="seek-wrap">
+        <div class="seek" id="seek">
+          <div class="seek-buf" id="seekBuf"></div>
+          <div class="seek-fill" id="seekFill"></div>
+          <div class="seek-knob" id="seekKnob"></div>
+          <div class="seek-tip" id="seekTip">0:00</div>
+        </div>
+        <div class="seek-time"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+      </div>
+
+      <div class="transport">
+        <button class="ctl sm" id="btnMode" title="播放模式">
+          <svg class="i-order" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h16"/></svg>
+          <svg class="i-shuffle" viewBox="0 0 24 24"><path d="M4 7h4l8 10h4M4 17h4l8-10h4M18 4l3 3-3 3M18 14l3 3-3 3"/></svg>
+          <svg class="i-one" viewBox="0 0 24 24"><path d="M17 3l3 3-3 3M20 6H8a4 4 0 00-4 4v1M7 21l-3-3 3-3M4 18h12a4 4 0 004-4v-1"/><path d="M11 9.5l2.2-1.2V15"/></svg>
+        </button>
+        <button class="ctl" id="btnPrev" title="上一首">
+          <svg viewBox="0 0 24 24"><path d="M18 6v12L9 12z" fill="currentColor" stroke="none"/><path d="M6 6v12"/></svg>
+        </button>
+        <button class="ctl play" id="btnPlay" title="播放">
+          <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z" fill="currentColor" stroke="none"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor" stroke="none"/></svg>
+        </button>
+        <button class="ctl" id="btnNext" title="下一首">
+          <svg viewBox="0 0 24 24"><path d="M6 6v12l9-6z" fill="currentColor" stroke="none"/><path d="M18 6v12"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── 歌词 ── -->
+    <section class="lyrics-panel">
+      <div class="lyr-head">
+        <span class="lyr-label">LYRICS</span>
+        <span class="lyr-src" id="lyrSrc">—</span>
+        <button class="lyr-alt" id="lyrAlt" title="换一版歌词（切到另一个来源）">换一版</button>
+        <button class="lyr-refresh" id="lyrRefresh" title="重新联网匹配歌词">
+          <svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-1.6 5.4M20 5v6h-6"/></svg>
+        </button>
+      </div>
+      <div class="lyr-body" id="lyrBody">
+        <div class="lyr-scroll" id="lyrScroll"></div>
+        <div class="lyr-empty" id="lyrEmpty">
+          <div class="le-q">♪</div>
+          <p>还没有歌词</p>
+          <small>播放一首歌，我会自动去网上找</small>
+        </div>
+      </div>
+      <div class="lyr-fade top"></div>
+      <div class="lyr-fade bot"></div>
+    </section>
+  </main>
+
+  <!-- ── 底部控制坞 ── -->
+  <footer class="dock">
+    <button class="dock-btn" id="dockOpen">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h9"/></svg>
+      <span>曲库</span>
+    </button>
+
+    <div class="dock-vol">
+      <button class="dock-ico" id="btnMute" title="静音">
+        <svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z"/><path id="volWave1" d="M15.5 9.2a4 4 0 010 5.6"/><path id="volWave2" d="M18 6.6a8 8 0 010 10.8"/><path id="volMuteX" d="M16 9.8l5 4.4M21 9.8l-5 4.4"/></svg>
+      </button>
+      <input class="slider vol-slider" type="range" id="volume" min="0" max="100" value="82">
+      <span class="vol-num" id="volNum">82</span>
+    </div>
+
+    <div class="dock-right">
+      <button class="pill" id="pillQuality"><span class="p-dot"></span>原声</button>
+      <button class="pill" id="pillSpeed">1.00×</button>
+      <button class="pill" id="pillPitch">0 st</button>
+      <button class="dock-btn ghost" id="dockSet">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+        <span>调校</span>
+      </button>
+    </div>
+  </footer>
+
+  <!-- ══ 曲库 · 编辑视图 ══ -->
+  <section id="library" class="lib-view" aria-hidden="true">
+    <div class="lib-side">
+      <button class="lib-back" id="libBack" title="返回播放视图">
+        <svg viewBox="0 0 24 24"><path d="M14 6l-6 6 6 6"/></svg>
+        <span>正在播放</span>
+      </button>
+      <div class="lib-side-cap">歌 单</div>
+      <div class="lib-pls" id="libPls"></div>
+      <button class="lib-new" id="libNew">＋ 新建歌单</button>
+    </div>
+    <div class="lib-main">
+      <div class="lib-head">
+        <input class="search" id="libSearch" name="q" autocomplete="off" spellcheck="false" placeholder="搜索歌名 / 歌手…">
+        <button class="mini-btn" id="libPickFolder">选文件夹</button>
+        <button class="mini-btn ghost" id="libPickFiles">加文件</button>
+        <button class="mini-btn ghost" id="libFixMeta" title="联网补全未知歌手">补全歌手</button>
+        <button class="mini-btn ghost" id="libRescan" title="重新扫描目录">↻</button>
+      </div>
+      <div class="selbar" id="selBar">
+        <span class="sel-t">已选 <em id="selCount">0</em> 首</span>
+        <span class="sel-mode" id="selMode">多选模式</span>
+        <button class="mini-btn" id="selAdd">加入歌单</button>
+        <button class="mini-btn ghost" id="selRmPl">移出歌单</button>
+        <button class="mini-btn danger" id="selRmLib">从曲库移除</button>
+        <button class="mini-btn ghost" id="selClear">取消选择</button>
+      </div>
+      <div class="lib-cols">
+        <span class="c-num">#</span><span class="c-th"></span>
+        <span>标题</span><span>歌手</span><span>专辑</span><span class="c-dur">时长</span>
+      </div>
+      <div class="lib-list" id="libList"></div>
+      <div class="lib-foot" id="libFoot"></div>
+    </div>
+  </section>
+
+
+  <!-- 迷你播放条：独立于曲库面板，fixed 贴窗口最底部 -->
+  <div class="lib-now" title="点击返回歌词界面">
+    <div class="ln-art" id="lnArt">
+      <svg class="ln-art-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="6.5" cy="18" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+        <circle cx="17.5" cy="16" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      </svg>
+    </div>
+    <div class="ln-txt">
+      <div class="ln-name" id="lnName">—</div>
+      <div class="ln-sub" id="lnSub"></div>
+    </div>
+    <div class="ln-bar"><i id="lnBar"></i></div>
+    <button class="ctl sm" id="lnPlay" title="播放 / 暂停">
+      <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5.2v13.6L19 12z" fill="currentColor" stroke="none"/></svg>
+      <svg class="i-pause" viewBox="0 0 24 24"><rect x="7" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor" stroke="none"/><rect x="13.6" y="5.5" width="3.4" height="13" rx="1.2" fill="currentColor" stroke="none"/></svg>
+    </button>
+  </div>
+
+  <!-- ══ 设置视图 ══ -->
+  <section id="settingsView" class="set-view" aria-hidden="true">
+    <div class="set-inner">
+      <button class="lib-back" id="setBack" title="返回">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        <span>返回</span>
+      </button>
+      <div class="set-title">设 置</div>
+
+            <div class="set-card" id="acctCard">
+        <div class="set-card-title">账 户</div>
+        <div class="sync-profile">
+          <div class="sync-avatar" id="syncAvatar">?</div>
+          <div class="acct-meta">
+            <input class="ask-input sync-name" id="syncName" placeholder="昵称" maxlength="24" spellcheck="false">
+            <div class="acct-id">账号ID：<b id="acctId">未登录</b></div>
+            <div class="acct-state" id="syncState">未登录</div>
+          </div>
+          <button class="mini-btn ghost" id="syncPickAvatar">换头像</button>
+        </div>
+        <div class="sync-row">
+          <button class="mini-btn" id="syncNow">立即同步</button>
+          <button class="mini-btn ghost" id="syncOut">退出登录</button>
+          <button class="mini-btn" id="syncConnect">连接自己的仓库…</button>
+        </div>
+        <div class="sync-stats" id="syncStats">今日 0 分钟 · 总计 0 小时</div>
+      </div>
+
+<div class="set-card">
+        <div class="set-card-title">定 时 停 止</div>
+        <div class="set-row">
+          <button class="set-chip on" data-sleep="off">不停止</button>
+          <button class="set-chip" data-sleep="songs">播完几首后停</button>
+          <button class="set-chip" data-sleep="minutes">几分钟后停</button>
+        </div>
+        <div class="set-row" style="margin-top:14px">
+          <input class="set-num" id="sleepNum" type="number" min="1" max="999" value="30">
+          <span class="set-unit" id="sleepUnit">首</span>
+          <span class="set-status" id="sleepStatus"></span>
+        </div>
+        <div class="set-hint">按首歌数计时以「整首播完」为准；按分钟仅在播放中倒数，暂停时自动挂起。</div>
+      </div>
+
+      <div class="set-card" id="setBgCard">
+        <div class="set-card-title">后 台 保 活</div>
+        <div class="set-row">
+          <button class="set-chip" data-bg="10">10 分钟</button>
+          <button class="set-chip on" data-bg="30">30 分钟</button>
+          <button class="set-chip" data-bg="60">60 分钟</button>
+          <button class="set-chip" data-bg="0">不退出</button>
+        </div>
+        <div class="set-hint">暂停播放后超过所选时间自动退出后台（释放内存、省电）；播放中不会退出。下次打开 App 从上次位置继续。</div>
+      </div>
+
+      <div class="set-card" id="setThemeCard">
+        <div class="set-card-title">外 观 主 题</div>
+        <div class="set-row">
+          <button class="set-chip on" data-theme="dark">黑夜模式</button>
+          <button class="set-chip" data-theme="light">白昼模式</button>
+        </div>
+        <div class="set-hint">白昼模式以米白 / 浅金为主，白天户外看得清；切换后立即生效并记住。</div>
+      </div>
+
+      <div class="set-card" id="setLyricColorCard">
+        <div class="set-card-title">版 本 与 更 新</div>
+        <div class="set-row">
+          <span class="set-unit">当前版本</span>
+          <b id="appVersion">—</b>
+          <button class="mini-btn" id="checkUpdateBtn">检查更新</button>
+        </div>
+        <div class="set-hint" id="updateHint">联网后可以检查新版本</div>
+        <button class="mini-btn" id="doUpdateBtn" style="display:none;margin-top:10px">下载并安装</button>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">歌 词 颜 色</div>
+        <div class="set-row" id="lyrColorChips">
+          <button class="set-chip on" data-lyr=""><i class="lyr-dot" style="background:linear-gradient(140deg,#F8DFB4,#E4C29A)"></i>默认</button>
+          <button class="set-chip" data-lyr="#F8DFB4"><i class="lyr-dot" style="background:#F8DFB4"></i>暖金</button>
+          <button class="set-chip" data-lyr="#FFFFFF"><i class="lyr-dot" style="background:#FFFFFF"></i>月白</button>
+          <button class="set-chip" data-lyr="#9BD0FF"><i class="lyr-dot" style="background:#9BD0FF"></i>浅蓝</button>
+          <button class="set-chip" data-lyr="#FFAFC7"><i class="lyr-dot" style="background:#FFAFC7"></i>樱粉</button>
+          <button class="set-chip" data-lyr="#A8E6A1"><i class="lyr-dot" style="background:#A8E6A1"></i>嫩绿</button>
+          <button class="set-chip" data-lyr="#C9B6FF"><i class="lyr-dot" style="background:#C9B6FF"></i>薰紫</button>
+          <button class="set-chip" data-lyr="#FFD59E"><i class="lyr-dot" style="background:#FFD59E"></i>杏橙</button>
+          <button class="set-chip" data-lyr="#1C1712"><i class="lyr-dot" style="background:#1C1712"></i>墨黑</button>
+        </div>
+        <div class="set-row" style="margin-top:12px">
+          <span class="set-unit">字号</span>
+          <input type="range" class="slider" id="lyrSize" min="0" max="30" step="1" value="0" style="flex:1">
+          <span class="set-unit" id="lyrSizeV">自动</span>
+        </div>
+        <div class="set-row" style="margin-top:12px">
+          <span class="set-unit">自定义</span>
+          <input type="color" id="lyrColorPick" value="#F8DFB4" style="width:52px;height:30px;border:0;background:transparent">
+          <button class="set-chip" id="lyrColorClear">恢复默认</button>
+        </div>
+        <div class="set-hint">改的是歌词正文：未唱到的行更淡、正在唱的那句最亮。字号「自动」跟随主题，拖动可自定义 12～30px。</div>
+      </div>
+
+      <div class="set-card" id="setOverlayCard">
+        <div class="set-card-title">歌 词 悬 浮 窗</div>
+        <div class="set-row">
+          <button class="set-chip on" id="lyrOverlayBtn">开启悬浮歌词</button>
+        </div>
+        <div class="set-hint">开启后歌词会浮在其他应用上方，可拖动位置；首次开启需要授予「显示在其他应用上层」权限。</div>
+      </div>
+
+      <div class="set-card" id="setWallCard">
+        <div class="set-card-title">背 景 壁 纸</div>
+        <div class="set-walls" id="wallGrid"></div>
+        <div class="set-row">
+          <button class="set-chip on" id="wallCycle">自动轮换</button>
+          <button class="set-chip" id="wallSystem">系统壁纸</button>
+          <button class="set-chip" id="wallPick">选择本机图片…</button>
+        </div>
+        <div class="set-row" style="margin-top:12px">
+          <span class="set-unit">亮度</span>
+          <input type="range" class="slider" id="wallBright" min="60" max="160" step="5" value="110" style="flex:1">
+          <span class="set-unit" id="wallBrightV">110%</span>
+        </div>
+        <div class="set-row" style="margin-top:8px">
+          <span class="set-unit">模糊</span>
+          <input type="range" class="slider" id="wallBlur" min="0" max="24" step="1" value="0" style="flex:1">
+          <span class="set-unit" id="wallBlurV">0px</span>
+        </div>
+        <div class="set-hint">「系统壁纸」＝Luvsic 原生渐变背景（不用照片）；选过本机图片后随时可以点它切回来。手机端不提供内置图片壁纸。</div>
+      </div>
+
+
+      <div class="set-card" id="setDownloadCard">
+        <div class="set-card-title">下 载 设 置</div>
+        <div class="set-row">
+          <span class="set-unit">下载到</span>
+          <span class="dl-dir" id="dlDirVal">跟随曲库目录</span>
+        </div>
+        <div class="set-row" style="margin-top:12px">
+          <button class="set-chip" id="dlPick">选择文件夹…</button>
+          <button class="set-chip" id="dlReset">恢复为曲库目录</button>
+        </div>
+        <div class="set-hint">导入、导出或另存的歌曲会存到这个文件夹；不选就存到曲库目录。</div>
+      </div>
+
+      <div class="set-card" id="setLibToolCard">
+        <div class="set-card-title">曲 库 维 护</div>
+        <div class="set-row">
+          <button class="set-chip" id="setFixMeta">联网补全歌手</button>
+          <button class="set-chip" id="setRepairLib">校验修复曲库</button>
+        </div>
+        <div class="set-hint">补全歌手：按歌名联网匹配（网易云公开数据），自动补全「未知艺术家」的歌。校验修复：曲目路径失效时按文件名重新匹配本机文件。</div>
+      </div>
+
+      <div class="set-card" id="setBackupCard">
+        <div class="set-card-title">数 据 备 份</div>
+        <div class="set-row">
+          <button class="set-chip" id="btnExportBackup">导出备份</button>
+          <button class="set-chip" id="btnImportBackup">恢复备份</button>
+        </div>
+        <div class="set-hint">把曲库索引、歌单、听歌统计、设置打包成一个 zip 保存到指定文件夹；恢复时先自动备份当前数据再覆盖。音乐文件本身不会被复制或删除。</div>
+      </div>
+
+      <div class="set-card" id="setWechatCard">
+        <div class="set-card-title">微 信 导 入</div>
+        <div class="set-row">
+          <button class="set-chip" id="wxScan">一键扫描微信歌曲</button>
+          <button class="set-chip" id="wxPick">指定微信目录…</button>
+        </div>
+        <div class="set-hint" id="wxHint">只认「文件传输助手」发来的 MP3 / 无损（flac、ape、wav），手机录音、通话、语音条一律不收。复制进曲库文件夹后重建索引，微信原件不动。</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══ 账号管理（仅管理员可见入口）══ -->
+  <section id="adminView" class="set-view" aria-hidden="true">
+    <div class="set-inner">
+      <button class="lib-back" id="adminBack" title="返回">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        <span>返回</span>
+      </button>
+      <div class="set-title">账 号 管 理</div>
+      <div class="set-card">
+        <div class="set-card-title">全 部 账 号（按最近登录排序）</div>
+        <div class="admin-list" id="adminList">加载中…</div>
+        <div class="sync-row">
+          <button class="mini-btn ghost" id="adminRefresh">刷新列表</button>
+        </div>
+        <div class="set-hint">谁在用你发的账号ID：昵称、备注、设备、最近登录时间。点「允许 / 禁止」开关对方的登录权限；点「备注」给这个账号写一句只有管理员能看到的说明。</div>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">待 批 准 的 新 设 备</div>
+        <div class="admin-list" id="pendingDevices">暂无</div>
+        <div class="set-hint">别人用账号ID在新设备上登录时，需要你在上面点「允许」才能进；同一台设备登录过之后不用再批。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ 好友与排行榜 ══ -->
+  <section id="friendsView" class="set-view" aria-hidden="true">
+    <div class="set-inner">
+      <button class="lib-back" id="friendsBack" title="返回">
+        <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+        <span>返回</span>
+      </button>
+      <div class="set-title" style="display:flex;align-items:center;justify-content:space-between">
+        <span>好 友 与 排 行 榜</span>
+        <button class="mini-btn ghost" id="friendsRefresh" title="手动刷新好友与排行榜数据">刷新</button>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">我 的 好 友 码</div>
+        <div class="set-row">
+          <span class="set-unit">好友码</span>
+          <b class="friend-code" id="myFriendCode">—</b>
+          <button class="mini-btn ghost" id="copyFriendCode">复制</button>
+        </div>
+        <div class="set-hint">好友码专门用来加好友，和登录用的账号ID是分开的——别人拿到你的好友码也登不进你的账号。</div>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">添 加 好 友</div>
+        <div class="set-row">
+          <input class="ask-input friend-input" id="friendCodeInput" maxlength="8" inputmode="numeric" placeholder="输入对方的 8 位好友码" spellcheck="false">
+          <button class="mini-btn" id="friendAddBtn">添加</button>
+        </div>
+        <div class="set-hint">输入对方的好友码发送申请，对方同意后你们才成为好友。</div>
+      </div>
+      <div class="set-card" id="friendReqCard">
+        <div class="set-card-title">好 友 申 请</div>
+        <div class="sync-lb" id="friendRequests">还没有新的好友申请</div>
+        <div class="set-hint" id="friendSentHint"></div>
+      </div>
+      <div class="set-card" id="shareInboxCard">
+        <div class="set-card-title">收 到 的 分 享 歌 单</div>
+        <div class="sync-lb" id="shareInbox">还没有人分享歌单给你</div>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">好 友 列 表</div>
+        <div class="sync-lb" id="friendsList">还没有好友</div>
+      </div>
+      <div class="set-card">
+        <div class="set-card-title">好 友 听 歌 时 长 榜</div>
+        <div class="sync-lb" id="friendsBoard">登录后显示</div>
+        <div class="set-hint">只统计你自己和你的好友，其他人看不到你们的数据。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 调校抽屉 ── -->
+  <div class="sheet" id="tuneSheet">
+    <div class="sheet-head">
+      <div class="sheet-title">调 校</div>
+      <div class="sheet-sub">声音的形状</div>
+      <button class="sheet-x" data-close="tuneSheet"><svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8"/></svg></button>
+    </div>
+
+    <div class="tune-scroll">
+      <div class="tune-block">
+        <div class="tune-h"><span>音质均衡</span><em id="eqPresetName">原声</em></div>
+        <div class="eq-presets" id="eqPresets">
+          <button data-eq="flat" class="on">原声</button>
+          <button data-eq="warm">温暖</button>
+          <button data-eq="clear">清澈</button>
+          <button data-eq="night">深夜</button>
+          <button data-eq="vocal">人声</button>
+        </div>
+        <div class="eq-rows" id="eqRows">
+          <label><span>低频</span><input class="slider eq bipolar" type="range" data-band="0" min="-12" max="12" step="1" value="0"><em>0</em></label>
+          <label><span>中频</span><input class="slider eq bipolar" type="range" data-band="1" min="-12" max="12" step="1" value="0"><em>0</em></label>
+          <label><span>高频</span><input class="slider eq bipolar" type="range" data-band="2" min="-12" max="12" step="1" value="0"><em>0</em></label>
+        </div>
+        <div class="eq-curve-wrap"><canvas id="eqCurve" width="620" height="120"></canvas></div>
+      </div>
+
+      <div class="tune-block">
+        <div class="tune-h"><span>立体声宽度</span><em id="widthVal">自然</em></div>
+        <input class="slider wide" type="range" id="stWidth" min="0" max="100" value="50">
+      </div>
+
+      <div class="tune-block">
+        <div class="tune-h"><span>播放速度</span><em id="speedVal">1.00×</em></div>
+        <input class="slider wide" type="range" id="speedRange" min="50" max="200" value="100">
+        <div class="quick-row">
+          <button data-speed="0.75">0.75×</button>
+          <button data-speed="1">1.00×</button>
+          <button data-speed="1.25">1.25×</button>
+          <button data-speed="1.5">1.50×</button>
+        </div>
+        <p class="tune-note">变速不改变音高（保持原调）</p>
+      </div>
+
+      <div class="tune-block">
+        <div class="tune-h"><span>升降调</span><em id="pitchVal">0 半音</em></div>
+        <input class="slider wide bipolar" type="range" id="pitchRange" min="-12" max="12" value="0">
+        <div class="quick-row">
+          <button data-pitch="-2">-2</button>
+          <button data-pitch="-1">-1</button>
+          <button data-pitch="0">归零</button>
+          <button data-pitch="1">+1</button>
+          <button data-pitch="2">+2</button>
+        </div>
+        <p class="tune-note">升降调不改变速度（独立于倍速）</p>
+      </div>
+
+      <div class="tune-block subtle">
+        <div class="tune-h"><span>其它</span></div>
+        <div class="toggle-row">
+          <span>淡入淡出切换</span>
+          <button class="switch on" id="swCrossfade"><i></i></button>
+        </div>
+        <div class="toggle-row">
+          <span>自动联网补词</span>
+          <button class="switch on" id="swLyrics"><i></i></button>
+        </div>
+        <div class="toggle-row">
+          <span>频谱可视化</span>
+          <button class="switch on" id="swViz"><i></i></button>
+        </div>
+        <button class="mini-btn ghost wide-btn" id="btnClearLyrics">清空歌词缓存</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet pick-sheet" id="pickSheet">
+    <div class="sheet-head">
+      <div class="sheet-title">选 择 歌 曲</div>
+      <div class="sheet-sub">勾选要放进曲库的本机歌曲，不勾的不会自动加入</div>
+      <button class="sheet-x" data-close="pickSheet"><svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8"/></svg></button>
+    </div>
+    <div class="pick-bar">
+      <input class="search" id="pickSearch" name="q" autocomplete="off" spellcheck="false" placeholder="搜索歌名 / 歌手…">
+      <button class="mini-btn ghost" id="pickAll">全选</button>
+      <button class="mini-btn ghost" id="pickNone">清空</button>
+    </div>
+    <div class="pick-list" id="pickList"></div>
+    <div class="pick-foot">
+      <span class="pick-info" id="pickInfo">已选 0 首</span>
+      <button class="mini-btn" id="pickSave">保存到曲库</button>
+    </div>
+  </div>
+
+  <div class="sheet meta-sheet" id="metaSheet">
+    <div class="sheet-head">
+      <div class="sheet-title">歌 曲 信 息</div>
+      <div class="sheet-sub">修改后会同时写入音频文件的标签</div>
+      <button class="sheet-x" data-close="metaSheet"><svg viewBox="0 0 24 24"><path d="M8 8l8 8M16 8l-8 8"/></svg></button>
+    </div>
+    <div class="meta-body">
+      <label class="meta-row"><span>歌名</span><input class="ask-input" id="metaTitle" spellcheck="false"></label>
+      <label class="meta-row"><span>歌手</span><input class="ask-input" id="metaArtist" spellcheck="false"></label>
+      <label class="meta-row"><span>专辑</span><input class="ask-input" id="metaAlbum" spellcheck="false"></label>
+    </div>
+    <div class="meta-foot">
+      <span class="meta-path" id="metaPath"></span>
+      <button class="mini-btn ghost" data-close="metaSheet">取消</button>
+      <button class="mini-btn" id="metaSave">保存</button>
+    </div>
+  </div>
+
+  <div class="ask" id="confirmAsk">
+    <div class="ask-box">
+      <div class="ask-title" id="confirmTitle">发现新版本</div>
+      <div class="confirm-msg" id="confirmMsg"></div>
+      <div class="ask-actions">
+        <button class="mini-btn ghost" id="confirmNo">稍后</button>
+        <button class="mini-btn" id="confirmYes">立即安装</button>
+      </div>
+    </div>
+  </div>
+  <div class="ask" id="nameAsk">
+    <div class="ask-box">
+      <div class="ask-title" id="askTitle">新建歌单</div>
+      <input class="ask-input" id="askInput" maxlength="40" spellcheck="false">
+      <div class="ask-actions">
+        <button class="mini-btn ghost" id="askCancel">取消</button>
+        <button class="mini-btn" id="askOk">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loginGate" aria-hidden="true">
+    <div class="gate-box">
+      <div class="gate-brand">LUVSIC</div>
+      <div class="gate-sub">连接<b>你自己的</b> GitHub 仓库<br>即可在多台设备间同步曲库、歌单与好友</div>
+      <input class="ask-input gate-input" id="gateRepo" placeholder="仓库：yourname/luvsic-data" spellcheck="false" autocomplete="off">
+      <input class="ask-input gate-input" id="gateToken" type="password" placeholder="GitHub Token（repo 权限）" spellcheck="false" autocomplete="off">
+      <button class="mini-btn gate-btn" id="gateLogin">连 接</button>
+      <button class="mini-btn ghost gate-btn" id="gateSkip" style="margin-top:8px">跳过，仅本地使用</button>
+      <div class="gate-err" id="gateErr"></div>
+      <div class="gate-tip">这不是账号系统，而是把数据存进<b>你自己的</b> GitHub 仓库。<br>不知道怎么建？看 <a href="https://github.com/Luvsic1132/luvsic/blob/main/docs/SYNC-SETUP.md" target="_blank" style="color:var(--gold);text-decoration:underline">搭建同步仓库教程</a>。<br>完全不想用云端？点上面的「跳过」，本地功能一样全。</div>
+    </div>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+<script src="pinyin_dict.js"></script>
+<script src="app.js?v=35"></script>
+</body>
+</html>
