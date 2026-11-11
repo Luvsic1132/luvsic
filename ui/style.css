@@ -1,0 +1,1906 @@
+/* ══════════════════════════════════════════════════════
+   LUMEN · 流明   ——   精致唯美艺术风
+   ══════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#06060A;
+  --ink-2:#0A0910;
+  --ink-3:#100E18;
+  --paper:#F3EEE7;
+  --paper-dim:rgba(243,238,231,.68);
+  --paper-faint:rgba(243,238,231,.40);
+  --gold:#E4C29A;
+  --gold-lit:#FAE9CE;
+  --gold-deep:#B08B5E;
+  --violet:#9C8CEA;
+  --violet-deep:#6B5BC4;
+  --line:rgba(243,238,231,.10);
+  --line-soft:rgba(243,238,231,.055);
+  --glass:rgba(255,255,255,.045);
+  --glass-lit:rgba(255,255,255,.085);
+  --serif:"Georgia","Songti SC","STSong","SimSun",serif;
+  --sans:"Segoe UI","Microsoft YaHei UI","PingFang SC",system-ui,sans-serif;
+  --ease:cubic-bezier(.32,.72,0,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --lyr-fg:rgba(243,238,231,.42);
+  --lyr-fg-hover:rgba(243,238,231,.78);
+  --lyr-on:#F8DFB4;
+  --lyr-glow:rgba(228,194,154,.55);
+  --lyr-glow2:rgba(228,194,154,.18);
+  --lyr-trans:rgba(243,238,231,.28);
+}
+body.light{
+  --lyr-fg:rgba(34,28,20,.46);
+  --lyr-fg-hover:rgba(34,28,20,.82);
+  --lyr-on:#7A4A10;
+  --lyr-glow:rgba(122,74,16,.32);
+  --lyr-glow2:rgba(122,74,16,.10);
+  --lyr-trans:rgba(34,28,20,.40);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:#000}
+body{
+  font-family:var(--sans);
+  color:var(--paper);
+  -webkit-font-smoothing:antialiased;
+  user-select:none;
+  cursor:default;
+}
+svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;
+    stroke-linecap:round;stroke-linejoin:round}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input[type=range]{-webkit-appearance:none;appearance:none;background:none;cursor:pointer}
+
+/* ─────────────────────── 启动动画 ─────────────────────── */
+#boot{
+  position:fixed;inset:0;z-index:9000;
+  background:radial-gradient(circle at 50% 46%,#0b0a14 0%,#040308 55%,#000 100%);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .85s var(--ease),filter .85s var(--ease),transform .85s var(--ease);
+}
+#boot.gone{opacity:0;filter:blur(26px);transform:scale(1.06);pointer-events:none}
+#bootCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:.75}
+
+.boot-scan{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(180deg,
+      rgba(255,255,255,.035) 0px,rgba(255,255,255,.035) 1px,transparent 1px,transparent 3px);
+  mix-blend-mode:overlay;opacity:.5;pointer-events:none;
+  animation:scanDrift 9s linear infinite;
+}
+@keyframes scanDrift{from{background-position-y:0}to{background-position-y:120px}}
+
+.boot-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:0}
+
+.boot-sigil{position:relative;width:120px;height:120px;margin-bottom:44px}
+.boot-sigil svg{width:120px;height:120px}
+.sigil-ring{
+  position:absolute;inset:-14px;border-radius:50%;
+  border:1px solid rgba(228,194,154,.16);
+  animation:ringPulse 3.6s var(--ease-out) infinite;
+}
+.sigil-ring.r2{inset:-34px;border-color:rgba(156,140,234,.10);animation-delay:1.2s}
+@keyframes ringPulse{
+  0%{transform:scale(.86);opacity:0}
+  40%{opacity:1}
+  100%{transform:scale(1.28);opacity:0}
+}
+
+.boot-word{
+  display:flex;gap:.34em;
+  font-family:var(--serif);
+  font-size:38px;letter-spacing:.34em;
+  color:var(--gold-lit);
+  text-shadow:0 0 26px rgba(228,194,154,.36);
+}
+.boot-word span{
+  opacity:0;transform:translateY(10px);
+  animation:letterIn .9s var(--ease-out) forwards;
+  animation-delay:calc(var(--i,0)*.09s);
+}
+.boot-word span:nth-child(1){--i:0}.boot-word span:nth-child(2){--i:1}
+.boot-word span:nth-child(3){--i:2}.boot-word span:nth-child(4){--i:3}
+.boot-word span:nth-child(5){--i:4}.boot-word span:nth-child(6){--i:5}
+@keyframes letterIn{to{opacity:1;transform:none}}
+
+.boot-cn{
+  margin-top:14px;font-size:10.5px;letter-spacing:1.1em;
+  color:rgba(243,238,231,.34);text-indent:1.1em;
+  opacity:0;animation:letterIn 1.1s .55s var(--ease-out) forwards;
+}
+
+/* ── 启动页：旋转光束 / 环绕光点 / 艺术 slogan ── */
+.boot-rays{
+  position:absolute;inset:-30%;pointer-events:none;opacity:.16;
+  background:conic-gradient(from 0deg,
+    rgba(228,194,154,0) 0deg, rgba(228,194,154,.30) 28deg, rgba(228,194,154,0) 88deg,
+    rgba(156,140,234,0) 176deg, rgba(156,140,234,.24) 238deg, rgba(156,140,234,0) 300deg);
+  filter:blur(30px);
+  animation:raysSpin 38s linear infinite;
+}
+@keyframes raysSpin{to{transform:rotate(1turn)}}
+
+.sigil-orbit{position:absolute;inset:-52px;border-radius:50%;
+  animation:orbitSpin 12s linear infinite;pointer-events:none}
+.sigil-orbit i{
+  position:absolute;top:-1.5px;left:50%;width:3.5px;height:3.5px;margin-left:-1.75px;
+  border-radius:50%;background:#f7e8d2;
+  box-shadow:0 0 12px rgba(247,232,210,.95),0 0 4px #fff;
+}
+@keyframes orbitSpin{to{transform:rotate(1turn)}}
+
+.boot-slogan{
+  margin-top:24px;display:flex;flex-direction:column;align-items:center;gap:11px;
+  font-family:var(--serif);text-align:center;padding:0 18px;
+}
+.bs-line{
+  opacity:0;transform:translateY(9px);
+  animation:letterIn 1.25s var(--ease-out) forwards;
+  font-size:15px;letter-spacing:.22em;color:rgba(243,238,231,.74);
+}
+.bs-line em{
+  font-style:normal;letter-spacing:.05em;
+  background:linear-gradient(100deg,#fae9ce,#e0b98f 46%,#9c8cea 96%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(228,194,154,.35));
+}
+.bs-1{animation-delay:.7s}
+.bs-2{animation-delay:1.02s;font-size:13px;letter-spacing:.26em;color:rgba(243,238,231,.56)}
+.bs-rule{
+  width:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(228,194,154,.7),transparent);
+  animation:ruleGrow 1.5s .92s var(--ease-out) forwards;
+}
+@keyframes ruleGrow{to{width:min(268px,74vw)}}
+
+.boot-meter{width:320px;margin-top:52px;opacity:0;animation:letterIn 1s .75s ease forwards}
+.meter-track{height:1px;background:rgba(243,238,231,.13);position:relative;overflow:visible}
+.meter-track i{
+  position:absolute;left:0;top:0;height:1px;width:0%;
+  background:linear-gradient(90deg,var(--violet),var(--gold) 60%,var(--gold-lit));
+  box-shadow:0 0 12px rgba(228,194,154,.85),0 0 3px #fff;
+  transition:width .28s linear;
+}
+.meter-row{display:flex;justify-content:space-between;margin-top:14px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:rgba(243,238,231,.30)}
+.boot-pct{color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:.1em}
+.boot-skip{
+  position:absolute;bottom:34px;left:0;right:0;text-align:center;
+  font-size:10px;letter-spacing:.24em;color:rgba(243,238,231,.16);
+  transition:color .3s;
+}
+#boot:hover .boot-skip{color:rgba(243,238,231,.38)}
+
+/* ─────────────────────── 主框架 ─────────────────────── */
+#app{
+  position:fixed;inset:0;display:grid;
+  grid-template-rows:38px 1fr 80px;
+  grid-template-columns:1fr;
+  opacity:0;transition:opacity 1.1s var(--ease) .15s;
+}
+#app.in{opacity:1}
+
+#bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--ink)}
+/* 真壁纸层：横图铺满，双图层交叉淡入实现轮换 */
+.bg-wall{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  background-repeat:no-repeat;
+  opacity:0;
+  transition:opacity 1.6s var(--ease);
+  transform:scale(1.04);
+  filter:var(--wall-filter,none);
+}
+.bg-wall.show{opacity:1}
+/* 专辑封面模糊层保留但压到极淡，仅作轻微动态着色，主背景交给壁纸 */
+.bg-art{
+  position:absolute;inset:-12%;
+  background-size:cover;background-position:center;
+  filter:blur(64px) saturate(150%) brightness(.34);
+  transform:scale(1.15);
+  transition:background-image .9s,opacity .9s;
+  opacity:.12;
+}
+.bg-veil{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 90% at 18% 8%,rgba(228,194,154,.08),transparent 55%),
+    radial-gradient(90% 80% at 88% 92%,rgba(107,91,196,.12),transparent 60%),
+    linear-gradient(180deg,rgba(6,6,10,.52) 0%,rgba(6,6,10,.66) 45%,rgba(4,4,7,.88) 100%);
+}
+.bg-grain{
+  position:absolute;inset:0;opacity:.20;pointer-events:none;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.55'/></svg>");
+}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.5}
+.orb-a{width:520px;height:520px;left:-140px;top:-160px;
+  background:radial-gradient(circle,rgba(228,194,154,.20),transparent 68%);
+  animation:floatA 24s ease-in-out infinite}
+.orb-b{width:600px;height:600px;right:-200px;bottom:-220px;
+  background:radial-gradient(circle,rgba(107,91,196,.24),transparent 68%);
+  animation:floatB 31s ease-in-out infinite}
+@keyframes floatA{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,50px)}}
+@keyframes floatB{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,-40px)}}
+
+/* ─────────────────────── 画框 ─────────────────────── */
+#frame{
+  position:fixed;inset:9px;z-index:85;
+  pointer-events:none;
+  border:1px solid rgba(228,194,154,.20);
+  border-radius:16px;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.38),
+    inset 0 0 46px rgba(0,0,0,.34);
+}
+#frame::before,#frame::after{
+  content:"";position:absolute;width:16px;height:16px;
+  border:0 solid rgba(240,214,172,.55);
+}
+#frame::before{
+  top:-1px;left:-1px;
+  border-top-width:1.5px;border-left-width:1.5px;
+  border-top-left-radius:16px;
+}
+#frame::after{
+  bottom:-1px;right:-1px;
+  border-bottom-width:1.5px;border-right-width:1.5px;
+  border-bottom-right-radius:16px;
+}
+
+/* ─────────────────────── 标题栏 ─────────────────────── */
+#titlebar{
+  position:relative;z-index:60;display:flex;align-items:center;
+  padding:0 10px 0 26px;
+  -webkit-app-region:drag;
+}
+.tb-mark{
+  font-family:var(--serif);font-size:11.5px;letter-spacing:.52em;
+  color:rgba(243,238,231,.44);display:flex;align-items:center;gap:9px;
+}
+.tb-mark i{width:4px;height:4px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 8px var(--gold);animation:breathe 3.4s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.35}50%{opacity:1}}
+.tb-drag{flex:1;align-self:stretch;-webkit-app-region:drag}
+.tb-actions{display:flex;align-items:center;gap:2px;-webkit-app-region:no-drag}
+.tbtn{
+  width:30px;height:30px;border-radius:9px;color:rgba(243,238,231,.42);
+  display:grid;place-items:center;transition:.24s var(--ease);
+}
+.tbtn svg{width:17px;height:17px}
+.tbtn:hover{color:var(--gold-lit);background:rgba(255,255,255,.07)}
+.tbtn.on{color:var(--gold);background:rgba(228,194,154,.12)}
+.tb-sep{width:1px;height:14px;background:rgba(243,238,231,.12);margin:0 10px}
+.wbtn{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  color:rgba(243,238,231,.40);transition:.22s var(--ease);
+}
+.wbtn svg{width:15px;height:15px;stroke-width:1.5}
+.wbtn:hover{background:rgba(255,255,255,.08);color:#fff}
+.wbtn.close:hover{background:#c2453f;color:#fff}
+
+/* ─────────────────────── 主体 ─────────────────────── */
+#main{
+  position:relative;z-index:10;
+  display:grid;grid-template-columns:minmax(360px,430px) 1fr;
+  min-height:0;padding:0 0 0 0;
+}
+.stage{
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 26px 0 44px;min-width:0;
+}
+
+/* 封面 */
+/* 应主人要求：封面占位框（含光环/圆环/频谱条）整体移除，左栏曲名居中、播放条贴底 */
+.art-wrap{position:relative;width:100%;display:none;justify-content:center}
+.art-halo{
+  position:absolute;width:118%;height:118%;top:-9%;left:-9%;
+  border-radius:50%;filter:blur(46px);opacity:.55;
+  background:radial-gradient(circle,rgba(228,194,154,.42),rgba(107,91,196,.18) 45%,transparent 70%);
+  animation:haloBreath 7s ease-in-out infinite;pointer-events:none;
+  transition:background 1s;
+}
+@keyframes haloBreath{0%,100%{transform:scale(.94);opacity:.40}50%{transform:scale(1.04);opacity:.66}}
+
+.art{
+  position:relative;width:288px;height:288px;border-radius:22px;overflow:hidden;
+  background:linear-gradient(150deg,#1a1720,#0d0b12);
+  box-shadow:
+    0 40px 80px -28px rgba(0,0,0,.92),
+    0 0 0 1px rgba(255,255,255,.09) inset,
+    0 1px 0 rgba(255,255,255,.16) inset;
+  transition:transform .7s var(--ease),box-shadow .7s var(--ease);
+}
+.art::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.13),
+             inset 0 1px 0 rgba(255,255,255,.24),
+             inset 0 -60px 70px -50px rgba(0,0,0,.7);
+}
+.art:hover{transform:translateY(-4px) scale(1.012)}
+.art.playing{animation:artFloat 6.5s ease-in-out infinite}
+@keyframes artFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+.art-img{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transition:opacity .7s var(--ease),transform 8s linear}
+.art-img.show{opacity:1}
+.art-empty{position:absolute;inset:0;display:grid;place-items:center;
+  color:rgba(243,238,231,.14);transition:opacity .5s}
+.art-empty svg{width:56px;height:56px;stroke-width:1}
+.art-empty.hide{opacity:0}
+#viz{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+  opacity:0;transition:opacity .6s;mix-blend-mode:screen}
+#viz.on{opacity:.9}
+.art-shine{
+  position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(118deg,transparent 32%,rgba(255,255,255,.13) 47%,transparent 60%);
+  transform:translateX(-120%);
+}
+.art:hover .art-shine{animation:shine 1.15s var(--ease-out)}
+@keyframes shine{to{transform:translateX(120%)}}
+
+.art-ring{
+  position:absolute;inset:0;border-radius:26px;pointer-events:none;
+  border:1px solid transparent;
+  background:linear-gradient(150deg,rgba(228,194,154,.30),rgba(156,140,234,.10) 45%,transparent 70%) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  opacity:.45;
+}
+
+/* 元信息 */
+.meta{width:100%;text-align:center;margin-top:auto;min-height:0}
+.meta-eyebrow{
+  font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:rgba(228,194,154,.78);margin-bottom:15px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.meta-eyebrow::before,.meta-eyebrow::after{
+  content:"";width:16px;height:1px;background:rgba(228,194,154,.32);
+}
+.meta-title{
+  font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.32;
+  letter-spacing:.012em;color:var(--paper);
+  text-shadow:0 2px 24px rgba(0,0,0,.6);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.meta-artist{margin-top:11px;font-size:12.5px;letter-spacing:.14em;color:var(--paper-dim)}
+.meta-album{margin-top:6px;font-size:10.5px;letter-spacing:.1em;color:var(--paper-faint)}
+
+/* 进度 */
+.seek-wrap{width:100%;margin-top:auto;padding-top:34px}
+.seek{position:relative;height:16px;display:flex;align-items:center;cursor:pointer}
+.seek::before{content:"";position:absolute;left:0;right:0;height:3px;
+  background:rgba(243,238,231,.20);border-radius:2px;transition:height .28s var(--ease)}
+.seek:hover::before{height:4px}
+.seek-buf,.seek-fill{position:absolute;left:0;height:3px;border-radius:2px;
+  transition:height .28s var(--ease),width .12s linear;pointer-events:none}
+.seek:hover .seek-buf,.seek:hover .seek-fill{height:4px}
+.seek-buf{background:rgba(243,238,231,.10);width:0}
+.seek-fill{
+  width:0;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold) 50%,var(--gold-lit));
+  box-shadow:0 0 14px rgba(228,194,154,.55);
+}
+.seek-knob{
+  position:absolute;width:10px;height:10px;border-radius:50%;left:0;
+  background:#FFF3DF;box-shadow:0 0 16px rgba(228,194,154,1),0 0 4px #fff;
+  transform:translateX(-50%) scale(.72);transition:transform .28s var(--ease);pointer-events:none;
+}
+.seek:hover .seek-knob{transform:translateX(-50%) scale(1.15)}
+.seek-tip{
+  position:absolute;top:-26px;transform:translateX(-50%);
+  font-size:10px;letter-spacing:.08em;color:var(--gold-lit);
+  background:rgba(10,9,16,.9);border:1px solid var(--line);
+  padding:2px 7px;border-radius:5px;opacity:0;transition:opacity .2s;
+  pointer-events:none;font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+.seek:hover .seek-tip{opacity:1}
+.seek-time{display:flex;justify-content:space-between;margin-top:9px;
+  font-size:10px;letter-spacing:.1em;color:var(--paper-faint);font-variant-numeric:tabular-nums}
+
+/* 传输控制 */
+.transport{display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:20px 0 26px;width:100%}
+.ctl{
+  position:relative;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
+  color:rgba(243,238,231,.68);transition:.28s var(--ease);
+}
+.ctl svg{width:20px;height:20px}
+.ctl:hover{color:var(--gold-lit);background:rgba(255,255,255,.06)}
+.ctl:active{transform:scale(.94)}
+.ctl.sm{width:34px;height:34px}
+.ctl.sm svg{width:16px;height:16px;stroke-width:1.5}
+.ctl.sm.on{color:var(--gold)}
+.loop-one{
+  position:absolute;top:6px;right:6px;font-size:8px;font-weight:700;
+  color:var(--gold);opacity:0;transition:.3s;
+}
+.ctl.on .loop-one{opacity:1}
+.ctl.play{
+  width:58px;height:58px;
+  background:linear-gradient(155deg,rgba(250,233,206,.96),rgba(228,194,154,.88));
+  color:#17131C;
+  box-shadow:0 12px 34px -12px rgba(228,194,154,.72),0 0 0 1px rgba(255,255,255,.3) inset;
+}
+.ctl.play:hover{transform:scale(1.045);color:#0d0a12;
+  box-shadow:0 18px 42px -14px rgba(228,194,154,.9),0 0 0 1px rgba(255,255,255,.45) inset}
+.ctl.play svg{width:22px;height:22px}
+.ctl.play .i-pause{display:none}
+.ctl.play.playing .i-play{display:none}
+.ctl.play.playing .i-pause{display:block}
+
+/* ─────────────────────── 歌词 ─────────────────────── */
+.lyrics-panel{
+  position:relative;min-width:0;min-height:0;display:flex;flex-direction:column;
+  padding:6px 46px 20px 8px;
+}
+.lyrics-panel::before{
+  content:"";position:absolute;left:0;top:46px;bottom:56px;width:1px;
+  background:linear-gradient(180deg,transparent,rgba(243,238,231,.10) 22%,
+             rgba(243,238,231,.10) 70%,transparent);
+  pointer-events:none;
+}
+.lyr-head{display:flex;align-items:center;gap:12px;padding:2px 8px 14px 34px;flex:0 0 auto}
+.lyr-label{font-size:9px;letter-spacing:.42em;color:rgba(243,238,231,.26)}
+.lyr-src{
+  font-size:9.5px;letter-spacing:.12em;color:rgba(228,194,154,.55);
+  padding:2px 8px;border:1px solid rgba(228,194,154,.18);border-radius:20px;
+}
+.lyr-refresh{
+  margin-left:auto;width:26px;height:26px;border-radius:7px;color:rgba(243,238,231,.28);
+  display:grid;place-items:center;transition:.3s var(--ease);
+}
+.lyr-refresh svg{width:14px;height:14px;stroke-width:1.5}
+.lyr-refresh:hover{color:var(--gold);background:rgba(255,255,255,.06);transform:rotate(70deg)}
+
+.lyr-body{position:relative;flex:1;min-height:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,transparent,#000 20%,#000 80%,transparent);
+  mask-image:linear-gradient(180deg,transparent,#000 20%,#000 80%,transparent)}
+.lyr-scroll{
+  position:absolute;left:0;right:0;top:50%;
+  padding:0 30px 0 34px;
+  transition:transform .72s var(--ease);
+  will-change:transform;
+}
+.lyr-line{
+  font-family:var(--serif);
+  font-size:var(--lyr-size,17px);line-height:1.5;letter-spacing:.035em;
+  /* 宋体笔画偏细，用轻微描边让字更结实一点（不糊） */
+  -webkit-text-stroke:0.32px currentColor;
+  color:var(--lyr-fg);
+  padding:8px 0;cursor:pointer;
+  transition:color .5s var(--ease),opacity .5s var(--ease),transform .6s var(--ease),filter .6s;
+  transform-origin:left center;
+}
+.lyr-line:hover{color:var(--lyr-fg-hover)}
+.lyr-line.active{
+  color:var(--lyr-on);
+  -webkit-text-stroke:0.42px currentColor;
+  transform:scale(1.05);
+  text-shadow:0 0 30px var(--lyr-glow),0 0 60px var(--lyr-glow2);
+  filter:none;
+}
+.lyr-line.past{opacity:.66}
+.lyr-line .trans{
+  display:block;font-family:var(--sans);font-size:11px;
+  letter-spacing:.06em;color:var(--lyr-trans);margin-top:5px;
+}
+.lyr-line.active .trans{color:var(--lyr-fg-hover)}
+.lyr-line.mini{font-size:13px;color:var(--lyr-trans);letter-spacing:.24em}
+
+.lyr-empty{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;text-align:center;
+  opacity:1;transition:opacity .5s;
+}
+.lyr-empty.hide{opacity:0;pointer-events:none}
+.le-q{font-family:var(--serif);font-size:38px;color:rgba(228,194,154,.2);
+  animation:breathe 4s ease-in-out infinite}
+.lyr-empty p{font-size:13px;color:var(--paper-dim);letter-spacing:.16em}
+.lyr-empty small{font-size:10px;color:var(--paper-faint);letter-spacing:.1em}
+
+/* ─────────────────────── 底部控制坞 ─────────────────────── */
+.dock{
+  position:relative;z-index:40;
+  display:flex;align-items:center;gap:20px;
+  padding:0 30px;
+}
+.dock::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(243,238,231,.165) 18%,
+             rgba(243,238,231,.165) 82%,transparent);
+}
+.dock::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,6,10,.30),rgba(4,4,8,.66));
+}
+.dock-btn{
+  display:flex;align-items:center;gap:8px;
+  height:34px;padding:0 14px;border-radius:10px;
+  font-size:11px;letter-spacing:.16em;color:rgba(243,238,231,.5);
+  border:1px solid transparent;transition:.26s var(--ease);
+}
+.dock-btn svg{width:15px;height:15px;stroke-width:1.6}
+.dock-btn:hover{color:var(--gold-lit);background:rgba(255,255,255,.055);
+  border-color:rgba(255,255,255,.09)}
+.dock-btn.ghost{border-color:rgba(255,255,255,.08)}
+
+.dock-vol{display:flex;align-items:center;gap:10px}
+.dock-ico{width:28px;height:28px;display:grid;place-items:center;
+  color:rgba(243,238,231,.48);transition:.24s;border-radius:8px}
+.dock-ico svg{width:17px;height:17px;stroke-width:1.5}
+.dock-ico:hover{color:var(--gold-lit);background:rgba(255,255,255,.06)}
+.dock-ico.muted #volWave1,.dock-ico.muted #volWave2{opacity:0}
+.dock-ico.muted #volMuteX{opacity:1}
+#volMuteX{opacity:0;transition:opacity .3s}
+#volWave1,#volWave2{transition:opacity .3s}
+
+.vol-slider{width:96px}
+.vol-num{font-size:9.5px;color:var(--paper-faint);width:18px;
+  font-variant-numeric:tabular-nums;letter-spacing:.04em}
+
+/* 滑杆通用 */
+.slider{-webkit-appearance:none;height:16px;position:relative;background:none}
+.slider::-webkit-slider-runnable-track{
+  height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--p,50%),rgba(243,238,231,.14) var(--p,50%));
+}
+.slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:9px;height:9px;border-radius:50%;
+  background:var(--gold-lit);margin-top:-3.5px;
+  box-shadow:0 0 10px rgba(228,194,154,.85);
+  transition:transform .2s var(--ease),box-shadow .2s;
+}
+.slider:hover::-webkit-slider-thumb{transform:scale(1.28);
+  box-shadow:0 0 16px rgba(228,194,154,1)}
+.slider.bipolar::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,
+    rgba(243,238,231,.15) 0 var(--lo,50%),
+    var(--gold) var(--lo,50%),var(--gold) var(--hi,50%),
+    rgba(243,238,231,.15) var(--hi,50%));
+}
+.slider.bipolar::-webkit-slider-thumb{background:#FFF3DF}
+
+.dock-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.pill{
+  height:26px;padding:0 12px;border-radius:20px;
+  font-size:10px;letter-spacing:.1em;color:rgba(243,238,231,.46);
+  border:1px solid rgba(255,255,255,.075);
+  display:flex;align-items:center;gap:6px;
+  transition:.26s var(--ease);font-variant-numeric:tabular-nums;
+}
+.pill:hover{color:var(--gold-lit);border-color:rgba(228,194,154,.34);
+  background:rgba(228,194,154,.07)}
+.pill.accent{color:var(--gold);border-color:rgba(228,194,154,.34);
+  background:rgba(228,194,154,.09)}
+.p-dot{width:3.5px;height:3.5px;border-radius:50%;background:var(--gold);
+  box-shadow:0 0 6px var(--gold)}
+
+/* ─────────────────────── 抽屉 ─────────────────────── */
+.sheet{
+  position:fixed;top:38px;right:0;bottom:80px;width:398px;z-index:200;
+  display:flex;flex-direction:column;
+  background:linear-gradient(165deg,rgba(24,22,33,.88),rgba(9,8,14,.94));
+  backdrop-filter:blur(42px) saturate(160%);
+  border-left:1px solid rgba(255,255,255,.09);
+  border-top-left-radius:20px;border-bottom-left-radius:20px;
+  box-shadow:-40px 0 90px -30px rgba(0,0,0,.85);
+  transform:translateX(calc(100% + 20px));
+  transition:transform .62s var(--ease);
+  opacity:0;
+}
+.sheet.open{transform:none;opacity:1}
+.sheet.wide{width:470px}
+
+.sheet-head{position:relative;padding:24px 26px 16px;flex:0 0 auto}
+.sheet-title{font-family:var(--serif);font-size:17px;letter-spacing:.36em;
+  color:var(--paper);text-indent:.36em}
+.sheet-sub{margin-top:7px;font-size:10px;letter-spacing:.16em;color:var(--paper-faint)}
+.sheet-x{position:absolute;top:18px;right:18px;width:28px;height:28px;border-radius:8px;
+  display:grid;place-items:center;color:rgba(243,238,231,.34);transition:.24s}
+.sheet-x svg{width:14px;height:14px}
+.sheet-x:hover{color:#fff;background:rgba(255,255,255,.08)}
+
+.sheet-tools{display:flex;gap:8px;padding:0 22px 14px;flex:0 0 auto;align-items:center}
+.search{
+  flex:1;height:34px;border-radius:9px;padding:0 13px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
+  color:var(--paper);font-size:11.5px;letter-spacing:.06em;outline:none;
+  transition:.3s var(--ease);user-select:text;
+  font-family:inherit;
+}
+.search::placeholder{color:rgba(243,238,231,.22)}
+.search:focus{border-color:rgba(228,194,154,.36);background:rgba(255,255,255,.07);
+  box-shadow:0 0 0 3px rgba(228,194,154,.07)}
+.mini-btn{
+  height:34px;padding:0 12px;border-radius:9px;font-size:10.5px;letter-spacing:.1em;
+  color:rgba(228,194,154,.85);background:rgba(228,194,154,.11);
+  border:1px solid rgba(228,194,154,.2);transition:.26s;white-space:nowrap;
+}
+.mini-btn:hover{background:rgba(228,194,154,.19);color:var(--gold-lit)}
+.mini-btn.ghost{color:rgba(243,238,231,.5);background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.07)}
+.mini-btn.ghost:hover{color:var(--paper);background:rgba(255,255,255,.08)}
+.wide-btn{width:100%;margin-top:14px}
+
+.queue-list{flex:1;overflow-y:auto;padding:2px 14px 10px}
+.queue-list::-webkit-scrollbar{width:5px}
+.queue-list::-webkit-scrollbar-thumb{background:rgba(243,238,231,.13);border-radius:6px}
+.queue-list::-webkit-scrollbar-track{background:transparent}
+.q-item{
+  display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;
+  cursor:pointer;transition:.22s var(--ease);position:relative;
+}
+.q-item:hover{background:rgba(255,255,255,.05)}
+.q-item.cur{background:rgba(228,194,154,.10)}
+.q-item.cur::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:2px;height:16px;border-radius:2px;background:var(--gold);
+  box-shadow:0 0 10px var(--gold)}
+.q-num{width:20px;font-size:9.5px;color:rgba(243,238,231,.24);text-align:right;
+  font-variant-numeric:tabular-nums;flex:0 0 auto}
+.q-item.cur .q-num{color:var(--gold)}
+.q-thumb{width:34px;height:34px;border-radius:7px;flex:0 0 auto;
+  background:rgba(255,255,255,.05);background-size:cover;background-position:center;
+  border:1px solid rgba(255,255,255,.06)}
+.q-txt{min-width:0;flex:1}
+.q-name{font-size:12px;color:rgba(243,238,231,.86);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.q-item.cur .q-name{color:var(--gold-lit)}
+.q-sub{font-size:9.5px;color:rgba(243,238,231,.3);margin-top:3px;letter-spacing:.06em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q-dur{font-size:9.5px;color:rgba(243,238,231,.24);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.sheet-foot{padding:10px 26px 16px;font-size:9.5px;letter-spacing:.14em;
+  color:rgba(243,238,231,.26);border-top:1px solid var(--line-soft);flex:0 0 auto}
+
+/* ─────────────────────── 曲库 · 编辑视图 ─────────────────────── */
+body.lib-mode #main{display:none}
+body.lib-mode .dock{display:none}
+.lib-view{
+  position:relative;z-index:20;display:none;
+  grid-template-columns:216px 1fr;
+  grid-template-rows:1fr;
+  grid-template-areas:"side main";
+  min-height:0;opacity:0;transform:translateY(10px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease);
+  /* 可读的玻璃面板：壁纸只从四周透出，中间内容区压暗以保证选项清晰 */
+  margin:6px 10px 8px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(12,11,18,.92) 0%,rgba(7,6,11,.95) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(130%);
+  backdrop-filter:blur(30px) saturate(130%);
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 22px 64px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.04);
+}
+body.lib-mode .lib-view{display:grid;opacity:1;transform:none}
+
+.lib-side{
+  grid-area:side;display:flex;flex-direction:column;
+  padding:14px 14px 12px 26px;border-right:1px solid var(--line-soft);min-height:0;
+}
+.lib-back{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 12px;border-radius:10px;margin-bottom:16px;
+  font-size:11.5px;letter-spacing:.14em;color:rgba(243,238,231,.72);
+  border:1px solid rgba(255,255,255,.09);transition:.26s var(--ease);
+}
+.lib-back svg{width:15px;height:15px}
+.lib-back:hover{color:var(--gold-lit);border-color:rgba(228,194,154,.32);background:rgba(228,194,154,.07)}
+.lib-side-cap{font-size:9px;letter-spacing:.36em;color:rgba(243,238,231,.26);padding:2px 12px 10px}
+.lib-pls{flex:1;overflow-y:auto;min-height:0}
+.lib-pls::-webkit-scrollbar{width:4px}
+.lib-pls::-webkit-scrollbar-thumb{background:rgba(243,238,231,.12);border-radius:4px}
+.lib-pl{
+  display:flex;align-items:center;gap:8px;width:100%;
+  padding:8px 12px;border-radius:9px;margin-bottom:2px;
+  font-size:12px;letter-spacing:.04em;color:rgba(243,238,231,.6);
+  transition:.22s var(--ease);text-align:left;position:relative;
+}
+.lib-pl svg{width:14px;height:14px;flex:0 0 auto;opacity:.5}
+.lib-pl .pl-n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lib-pl .pl-c{font-size:9px;color:rgba(243,238,231,.28);font-variant-numeric:tabular-nums}
+.lib-pl:hover{color:var(--paper);background:rgba(255,255,255,.05)}
+.lib-pl.on{color:var(--gold-lit);background:rgba(228,194,154,.1)}
+.lib-pl.on::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:2px;height:14px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.lib-new{
+  margin-top:8px;padding:8px 12px;border-radius:9px;text-align:left;
+  font-size:11px;letter-spacing:.1em;color:rgba(228,194,154,.75);
+  border:1px dashed rgba(228,194,154,.26);transition:.26s;
+}
+.lib-new:hover{color:var(--gold-lit);border-color:rgba(228,194,154,.5);background:rgba(228,194,154,.06)}
+
+.lib-main{grid-area:main;display:flex;flex-direction:column;min-width:0;min-height:0;padding:14px 26px 0 22px}
+.lib-head{display:flex;gap:8px;align-items:center;flex:0 0 auto;padding-bottom:14px}
+.lib-cols,.lrow{
+  display:grid;grid-template-columns:44px 46px minmax(0,1fr) minmax(0,.7fr) minmax(0,.6fr) 56px;
+  gap:12px;align-items:center;
+}
+.lib-cols{
+  flex:0 0 auto;padding:6px 14px;
+  font-size:9px;letter-spacing:.22em;color:rgba(243,238,231,.24);
+  border-bottom:1px solid var(--line-soft);
+}
+.lib-list{flex:1;overflow-y:auto;min-height:0;padding:6px 0}
+.lib-list::-webkit-scrollbar{width:5px}
+.lib-list::-webkit-scrollbar-thumb{background:rgba(243,238,231,.13);border-radius:6px}
+.lrow{
+  padding:7px 14px;border-radius:10px;cursor:pointer;position:relative;
+  transition:background .2s var(--ease);
+}
+.lrow:hover{background:rgba(255,255,255,.05)}
+.lrow.cur{background:rgba(228,194,154,.09)}
+.lrow.cur::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:2px;height:16px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.l-num{font-size:9.5px;color:rgba(243,238,231,.26);text-align:right;font-variant-numeric:tabular-nums}
+.lrow.cur .l-num{color:var(--gold)}
+.l-th{width:38px;height:38px;border-radius:7px;background:rgba(255,255,255,.05);
+  background-size:cover;background-position:center;border:1px solid rgba(255,255,255,.06);overflow:hidden;
+  display:grid;place-items:center;color:rgba(243,238,231,.18)}
+.l-th svg{width:15px;height:15px}
+.l-name{font-size:12.5px;color:rgba(243,238,231,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow.cur .l-name{color:var(--gold-lit)}
+.l-artist,.l-album{font-size:10.5px;color:rgba(243,238,231,.38);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.04em}
+.l-dur{font-size:10px;color:rgba(243,238,231,.3);text-align:right;font-variant-numeric:tabular-nums}
+.lib-empty{
+  padding:64px 24px;text-align:center;line-height:2.1;
+  font-size:13px;letter-spacing:.14em;color:rgba(243,238,231,.42);
+}
+.lib-empty small{display:block;font-size:10px;letter-spacing:.08em;color:rgba(243,238,231,.24)}
+.lib-foot{flex:0 0 auto;padding:10px 14px 12px;font-size:9.5px;letter-spacing:.12em;
+  color:rgba(243,238,231,.26);border-top:1px solid var(--line-soft)}
+
+/* 多选 */
+.lrow.sel{background:rgba(156,140,234,.13)}
+.lrow.sel.cur{background:rgba(228,194,154,.16)}
+.selbar{
+  display:none;align-items:center;gap:8px;flex:0 0 auto;
+  padding:0 0 12px;
+}
+.selbar.on{display:flex;animation:selIn .3s var(--ease-out)}
+@keyframes selIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.sel-t{font-size:11px;letter-spacing:.12em;color:rgba(243,238,231,.6);margin-right:4px}
+.sel-t em{font-style:normal;color:var(--gold);font-variant-numeric:tabular-nums}
+.sel-mode{
+  display:none;align-self:center;
+  font-size:10px;letter-spacing:.14em;
+  padding:2px 9px;border-radius:999px;
+  color:var(--gold);border:1px solid rgba(240,198,116,.34);
+  background:rgba(240,198,116,.10);
+  margin-right:2px;white-space:nowrap;
+}
+.sel-mode.on{display:inline-block}
+.mini-btn.danger{
+  color:rgba(226,118,108,.92);
+  border-color:rgba(194,69,63,.32);
+  background:rgba(194,69,63,.09);
+}
+.mini-btn.danger:hover{color:#F0A096;background:rgba(194,69,63,.18)}
+
+/* 播放模式按钮 */
+#btnMode .i-shuffle,#btnMode .i-one{display:none}
+#btnMode.m-shuffle .i-order{display:none}
+#btnMode.m-shuffle .i-shuffle{display:block}
+#btnMode.m-one .i-order{display:none}
+#btnMode.m-one .i-one{display:block}
+#btnMode .loop-one{top:4px;right:7px}
+/* 播放模式按钮：图标加粗、三种模式颜色分明 */
+#btnMode{color:rgba(243,238,231,.82)}
+#btnMode svg{stroke-width:2.1}
+#btnMode.on{color:var(--gold-lit)}
+body.light #btnMode{color:rgba(34,28,20,.8)}
+body.light #btnMode.on{color:#B8863B}
+body.android #mobTop #btnMode::after{font-weight:600}
+
+/* 拖拽指示 */
+.lrow.dragging{opacity:.35}
+.lrow.drop-before{box-shadow:0 -2px 0 0 var(--gold)}
+.lrow.drop-after{box-shadow:0 2px 0 0 var(--gold)}
+.lrow[draggable="true"]{cursor:grab}
+.lrow[draggable="true"]:active{cursor:grabbing}
+
+/* 正在播放迷你条：#app 直接子元素，fixed 贴窗口最底部（壁纸上） */
+.lib-now{
+  display:none;
+  position:fixed;left:0;right:0;bottom:0;height:80px;z-index:30;
+  align-items:center;gap:14px;
+  padding:0 34px 0 30px;
+  background:linear-gradient(180deg,rgba(4,4,8,0) 0%,rgba(4,4,8,.66) 46%,rgba(3,3,6,.86) 100%);
+  cursor:pointer;transition:background .25s var(--ease);
+}
+body.lib-mode .lib-now{display:flex}
+.lib-now:hover{background:linear-gradient(180deg,rgba(4,4,8,0) 0%,rgba(228,194,154,.10) 46%,rgba(10,8,14,.88) 100%)}
+.lib-now .ln-txt{pointer-events:none}
+.lib-now:hover .ln-name{color:var(--gold-lit)}
+.ln-art{width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,.05) center/cover;
+  border:1px solid rgba(255,255,255,.07);flex:0 0 auto;overflow:hidden;
+  display:grid;place-items:center;color:rgba(243,238,231,.32)}
+.ln-art-icon{width:18px;height:18px;display:block}
+.ln-art.has-cover .ln-art-icon{display:none}
+.ln-txt{width:240px;min-width:0;flex:0 0 auto}
+.ln-name{font-size:12px;color:rgba(243,238,231,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln-sub{font-size:9.5px;color:rgba(243,238,231,.32);margin-top:3px;letter-spacing:.06em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln-bar{flex:1;height:2px;border-radius:2px;background:rgba(243,238,231,.12);position:relative}
+.ln-bar i{position:absolute;left:0;top:0;height:2px;border-radius:2px;width:0;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold-lit));
+  box-shadow:0 0 10px rgba(228,194,154,.5);transition:width .12s linear}
+.lib-now .ctl.sm{flex:0 0 auto;background:linear-gradient(155deg,rgba(250,233,206,.96),rgba(228,194,154,.88));
+  color:#17131C;box-shadow:0 8px 22px -10px rgba(228,194,154,.7)}
+.lib-now .ctl.sm:hover{transform:scale(1.06)}
+.lib-now .i-pause{display:none}
+.lib-now .ctl.sm.playing .i-play{display:none}
+.lib-now .ctl.sm.playing .i-pause{display:block}
+
+/* ─────────────────────── 设置视图 ─────────────────────── */
+body.set-mode #main{display:none}
+body.set-mode .lib-view{display:none}
+body.set-mode .dock{display:none}
+.set-view{
+  position:relative;z-index:20;display:none;
+  margin:6px 10px 8px;border-radius:16px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(12,11,18,.92) 0%,rgba(7,6,11,.95) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(130%);
+  backdrop-filter:blur(30px) saturate(130%);
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 22px 64px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.04);
+  opacity:0;transform:translateY(10px);
+  transition:opacity .45s var(--ease),transform .45s var(--ease);
+}
+body.set-mode .set-view{display:none;opacity:1;transform:none}
+body.set-mode:not(.admin-mode):not(.friends-mode) #settingsView{display:block}
+body.set-mode.admin-mode #adminView{display:block}
+body.set-mode.friends-mode #friendsView{display:block}
+.lb-id{font-style:normal;margin-left:6px;font-size:9.5px;color:rgba(243,238,231,.35);letter-spacing:.04em}
+/* 好友榜：总榜/周榜/月榜切换 + 正在听 */
+.board-tabs{display:flex;gap:8px;margin:0 0 10px}
+.lb-now{font-size:10px;color:rgba(243,238,231,.45);margin-top:2px;letter-spacing:.02em}
+body.light .lb-now{color:rgba(34,28,20,.5)}
+body.light .lb-id{color:rgba(34,28,20,.4)}
+/* 好友 */
+.friend-input{flex:1;height:42px;min-width:0;letter-spacing:.22em;text-align:center;font-size:15px}
+.friend-row{display:flex;align-items:center;gap:8px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.05);
+  font-size:12px;color:rgba(243,238,231,.82)}
+.friend-row:last-child{border-bottom:0}
+.friend-row .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.friend-row .hr{flex:0 0 auto;font-size:10px;color:rgba(243,238,231,.5)}
+.friend-row .friend-del{flex:0 0 auto;font-size:10px;padding:3px 9px}
+.friend-row .friend-note{flex:0 0 auto;font-size:10px;padding:3px 9px}
+.friend-orig{font-style:normal;margin-left:6px;font-size:10px;color:rgba(243,238,231,.38)}
+body.light .friend-orig{color:rgba(34,28,20,.42)}
+body.android .friend-row{flex-wrap:wrap;row-gap:4px}
+body.android .friend-row .nm{flex:1 1 60%}
+body.android .friend-row .lb-id{order:2}
+body.android .friend-row .hr{order:5;margin-left:auto}
+body.android .friend-row .friend-note{order:3}
+body.android .friend-row .friend-del{order:4}
+body.light .friend-row{color:rgba(34,28,20,.82);border-color:rgba(40,32,20,.08)}
+/* 歌单拖动排序：浮起行 + 目标插入线 */
+.lrow{position:relative}
+.lrow.drag-lift{z-index:6;background:rgba(228,194,154,.14)!important;border:1px solid rgba(228,194,154,.45);
+  border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.55);transition:none}
+.lrow.drop-line::after{content:'';position:absolute;left:6px;right:6px;top:-1px;height:2px;
+  background:var(--gold-lit);box-shadow:0 0 8px rgba(248,223,180,.7);border-radius:2px}
+/* 管理员专属区块：普通账号看不到 */
+body:not(.is-admin) [data-admin]{display:none!important}
+.friend-code{font-family:var(--mono,monospace);font-size:15px;letter-spacing:.18em;color:var(--gold-lit);flex:1}
+.admin-note{color:rgba(228,194,154,.85);font-size:10.5px;margin-left:6px}
+.admin-note.empty{color:rgba(243,238,231,.3)}
+.admin-row .note-btn{flex:0 0 auto;font-size:10px;padding:2px 7px;border-radius:5px;cursor:pointer;
+  border:1px dashed rgba(243,238,231,.22);background:transparent;color:rgba(243,238,231,.55)}
+.admin-row .note-btn:hover{background:rgba(243,238,231,.06)}
+body.light .admin-row .note-btn{color:rgba(34,28,20,.55);border-color:rgba(40,32,20,.22)}
+.set-inner{position:absolute;inset:0;overflow-y:auto;padding:26px 44px 30px}
+.set-inner::-webkit-scrollbar{width:5px}
+.set-inner::-webkit-scrollbar-thumb{background:rgba(243,238,231,.13);border-radius:6px}
+.set-title{font-size:20px;letter-spacing:.42em;color:var(--paper);margin:2px 0 24px 2px}
+.set-card{
+  max-width:640px;margin-bottom:22px;padding:20px 24px 22px;border-radius:14px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);
+}
+.set-card-title{font-size:11px;letter-spacing:.3em;color:rgba(228,194,154,.85);margin-bottom:16px}
+.set-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:36px}
+.set-chip{
+  padding:8px 18px;border-radius:999px;font-size:12px;letter-spacing:.08em;
+  color:rgba(243,238,231,.62);border:1px solid rgba(255,255,255,.10);
+  transition:.22s var(--ease);
+}
+.set-chip:hover{color:var(--paper);border-color:rgba(255,255,255,.22)}
+.set-chip.on{
+  color:#17131C;font-weight:600;
+  background:linear-gradient(155deg,rgba(250,233,206,.96),rgba(228,194,154,.88));
+  border-color:transparent;box-shadow:0 8px 22px -10px rgba(228,194,154,.7);
+}
+.set-num{
+  width:90px;padding:8px 12px;border-radius:9px;font-size:13px;color:var(--paper);
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);
+  font-variant-numeric:tabular-nums;outline:none;transition:.2s;
+}
+.set-num:focus{border-color:rgba(228,194,154,.45)}
+.set-unit{font-size:11px;letter-spacing:.14em;color:rgba(243,238,231,.4)}
+.set-status{margin-left:auto;font-size:11px;letter-spacing:.08em;color:var(--gold);font-variant-numeric:tabular-nums}
+.set-hint{margin-top:14px;font-size:10px;letter-spacing:.1em;color:rgba(243,238,231,.26);line-height:1.8}
+.set-walls{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.wall-th{
+  position:relative;aspect-ratio:16/10;border-radius:10px;cursor:pointer;overflow:hidden;
+  background:rgba(255,255,255,.05) center/cover no-repeat;
+  border:2px solid rgba(255,255,255,.08);transition:.24s var(--ease);
+}
+.wall-th:hover{transform:translateY(-3px);border-color:rgba(228,194,154,.5)}
+.wall-th.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 10px 26px -10px rgba(228,194,154,.6)}
+.wall-th.on::after{
+  content:"✓";position:absolute;right:6px;top:4px;font-size:12px;font-weight:700;
+  color:#17131C;background:linear-gradient(155deg,rgba(250,233,206,.96),rgba(228,194,154,.9));
+  width:20px;height:20px;border-radius:50%;display:grid;place-items:center;
+}
+
+/* 右键菜单 */
+.ctx{
+  position:fixed;z-index:9600;min-width:178px;padding:6px;
+  background:linear-gradient(165deg,rgba(24,22,33,.97),rgba(10,9,16,.98));
+  backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;box-shadow:0 24px 60px -20px #000;
+  opacity:0;transform:scale(.96) translateY(-5px);
+  transition:opacity .16s var(--ease),transform .16s var(--ease);
+}
+.ctx.on{opacity:1;transform:none}
+.ctx-item{
+  display:block;width:100%;text-align:left;padding:7px 12px;border-radius:8px;
+  font-size:11.5px;letter-spacing:.04em;color:rgba(243,238,231,.78);transition:.16s;
+}
+.ctx-item:hover{background:rgba(255,255,255,.07);color:var(--gold-lit)}
+.ctx-item.danger{color:rgba(226,118,108,.9)}
+.ctx-item.danger:hover{background:rgba(194,69,63,.16);color:#F0A096}
+.ctx-item.dim{color:rgba(243,238,231,.28)}
+.ctx-head{padding:7px 12px 4px;font-size:9px;letter-spacing:.22em;color:rgba(243,238,231,.3)}
+.ctx-sep{height:1px;margin:5px 8px;background:rgba(243,238,231,.08)}
+
+/* 命名浮层 */
+.ask{position:fixed;inset:0;z-index:9700;display:none;place-items:center;
+  background:rgba(3,3,6,.5);backdrop-filter:blur(3px)}
+.ask.on{display:grid}
+.ask-box{
+  width:320px;padding:22px;border-radius:16px;
+  background:linear-gradient(165deg,rgba(26,24,36,.97),rgba(10,9,16,.98));
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 30px 80px -24px #000;
+}
+.ask-title{font-size:11px;letter-spacing:.22em;color:rgba(243,238,231,.5);margin-bottom:14px}
+.ask-input{
+  width:100%;height:38px;border-radius:10px;padding:0 14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  color:var(--paper);font-size:13px;outline:none;font-family:inherit;user-select:text;
+  transition:.3s var(--ease);
+}
+.ask-input:focus{border-color:rgba(228,194,154,.4);background:rgba(255,255,255,.08);
+  box-shadow:0 0 0 3px rgba(228,194,154,.07)}
+.ask-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.confirm-msg{font-size:13px;line-height:1.65;color:rgba(243,238,231,.82);margin-bottom:4px;
+  white-space:pre-wrap;word-break:break-word}
+body.light .confirm-msg{color:rgba(34,28,20,.82)}
+
+/* 调校面板 */
+.tune-scroll{flex:1;overflow-y:auto;padding:0 26px 30px}
+.tune-scroll::-webkit-scrollbar{width:5px}
+.tune-scroll::-webkit-scrollbar-thumb{background:rgba(243,238,231,.13);border-radius:6px}
+.tune-block{padding:17px 0;border-bottom:1px solid var(--line-soft)}
+.tune-block:last-child{border-bottom:0}
+.tune-block.subtle{padding-top:14px}
+.tune-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px}
+.tune-h span{font-size:11.5px;letter-spacing:.2em;color:rgba(243,238,231,.72)}
+.tune-h em{font-style:normal;font-size:10.5px;letter-spacing:.08em;color:var(--gold);
+  font-variant-numeric:tabular-nums}
+
+.eq-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.eq-presets button{
+  height:26px;padding:0 12px;border-radius:20px;font-size:10px;letter-spacing:.1em;
+  color:rgba(243,238,231,.42);border:1px solid rgba(255,255,255,.07);transition:.26s;
+}
+.eq-presets button:hover{color:var(--paper);border-color:rgba(255,255,255,.16)}
+.eq-presets button.on{color:#17131C;background:linear-gradient(150deg,var(--gold-lit),var(--gold));
+  border-color:transparent;box-shadow:0 6px 18px -8px rgba(228,194,154,.8)}
+
+.eq-rows{display:flex;flex-direction:column;gap:12px}
+.eq-rows label{display:grid;grid-template-columns:34px 1fr 26px;align-items:center;gap:12px}
+.eq-rows span{font-size:10.5px;color:rgba(243,238,231,.44);letter-spacing:.1em}
+.eq-rows em{font-style:normal;font-size:10px;color:rgba(228,194,154,.8);text-align:right;
+  font-variant-numeric:tabular-nums}
+.slider.eq{width:100%}
+.eq-curve-wrap{margin-top:20px;height:70px;opacity:.95}
+#eqCurve{width:100%;height:70px;display:block}
+
+.slider.wide{width:100%}
+.quick-row{display:flex;gap:6px;margin-top:14px}
+.quick-row button{
+  flex:1;height:28px;border-radius:8px;font-size:10.5px;letter-spacing:.06em;
+  color:rgba(243,238,231,.46);background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.06);transition:.24s;
+  font-variant-numeric:tabular-nums;
+}
+.quick-row button:hover{color:var(--gold-lit);border-color:rgba(228,194,154,.3);
+  background:rgba(228,194,154,.08)}
+.tune-note{margin-top:12px;font-size:9.5px;letter-spacing:.06em;color:rgba(243,238,231,.24);
+  line-height:1.6}
+
+.toggle-row{display:flex;align-items:center;justify-content:space-between;
+  padding:9px 0;font-size:11px;letter-spacing:.12em;color:rgba(243,238,231,.56)}
+.switch{width:36px;height:20px;border-radius:20px;background:rgba(255,255,255,.10);
+  position:relative;transition:.34s var(--ease);flex:0 0 auto}
+.switch i{position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;
+  background:rgba(243,238,231,.6);transition:.34s var(--ease)}
+.switch.on{background:rgba(228,194,154,.32)}
+.switch.on i{left:19px;background:var(--gold-lit);
+  box-shadow:0 0 10px rgba(228,194,154,.9)}
+
+/* 遮罩 & toast */
+.scrim{position:fixed;inset:0;z-index:150;background:rgba(3,3,6,.42);
+  opacity:0;pointer-events:none;transition:opacity .5s;backdrop-filter:blur(2px)}
+.scrim.on{opacity:1;pointer-events:auto}
+
+.toast{
+  position:fixed;left:50%;bottom:104px;transform:translate(-50%,14px);
+  padding:9px 20px;border-radius:22px;z-index:9500;
+  background:rgba(16,14,24,.94);backdrop-filter:blur(20px);
+  border:1px solid rgba(228,194,154,.22);
+  font-size:11px;letter-spacing:.14em;color:var(--paper);
+  opacity:0;pointer-events:none;transition:.42s var(--ease);
+  box-shadow:0 16px 40px -18px #000;white-space:nowrap;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 响应式 */
+@media (max-width:1060px){
+  #main{grid-template-columns:minmax(320px,380px) 1fr}
+  .stage{padding-left:38px;padding-right:20px}
+  .art{width:244px;height:244px;border-radius:18px}
+  .meta-title{font-size:23px}
+  .lyrics-panel{padding-right:28px}
+}
+@media (max-width:900px){
+  .sheet{width:340px}
+  .dock-right .pill:nth-child(2){display:none}
+}
+
+body.light .on-batch{border-top-color:rgba(40,32,20,.1)}
+body.light .on-batch-cap{color:#8A5A22}
+body.light .on-batch-input{background:rgba(255,252,246,.9);border-color:rgba(176,124,62,.25);
+  color:#2A2116}
+body.light .on-batch-tip{color:rgba(34,28,20,.45)}
+
+/* ══════════ 手机版适配（安卓壳 body.android / 窄屏）══════════ */
+body.android #titlebar{display:none}
+/* 安卓壳里 #titlebar 被 display:none 移除，网格从两行开始，避免 #main 掉进 0 高度行 */
+body.android #app{grid-template-rows:1fr 64px}
+/* 手机上有封面就显示封面；系统媒体库的专辑封面也走 /cover 拿 */
+body.android .art-wrap{display:flex}
+/* 手机默认不铺壁纸；用户在设置里选过壁纸才打开 (#bgWallA/B) */
+body.android:not(.wall-on) #bgWallA,
+body.android:not(.wall-on) #bgWallB{display:none}
+/* 设置页：微信导入在手机上不提供；壁纸入口保留 */
+body.android #setBack,
+body.android #onBack,
+body.android #setWechatCard{display:none}
+/* 手机版不需要桌面窗口的金色画框 */
+body.android #frame{display:none}
+body.android #main{
+  display:flex;flex-direction:column;overflow:hidden;
+  padding:0;
+}
+body.android .stage{
+  padding:8px 18px 0;flex:1 1 auto;min-height:0;overflow:hidden;
+  justify-content:center;
+}
+body.android .meta{margin-top:8px}
+body.android .art-wrap{margin-top:2px}
+body.android .art{width:124px;height:124px;border-radius:12px}
+body.android .art-halo{opacity:.4}
+body.android .meta-eyebrow{font-size:8px;letter-spacing:.3em;margin-top:6px;margin-bottom:8px}
+body.android .meta-title{font-size:18px;letter-spacing:.05em;margin-top:2px}
+body.android .meta-artist{font-size:11px;margin-top:2px}
+body.android .meta-album{font-size:9px;margin-top:1px}
+body.android .seek{margin-top:6px}
+body.android .seek-time{font-size:9px}
+body.android .transport{margin-top:0}
+body.android .ctl{width:40px;height:40px}
+body.android .ctl.big{width:56px;height:56px}
+body.android .dock{display:none}
+/* 手机播放页：歌曲/歌词是左右并排的两页，跟手拖动切换 */
+body.android .lyrics-panel{
+  display:none;flex:1 1 auto;min-height:0;padding:0 16px 4px;
+  border-top:1px solid rgba(255,255,255,.05);margin-top:4px;
+}
+body.android.lyr-open .stage{display:none}
+body.android.lyr-open .lyrics-panel{
+  display:flex;flex-direction:column;
+  animation:lyrSlideIn .3s cubic-bezier(.22,.61,.36,1);
+}
+@keyframes lyrSlideIn{from{transform:translateX(100%);opacity:.6}to{transform:none;opacity:1}}
+body.light #main{background:#F2EDE4}
+body.light .lyrics-panel{background:#F7F3EA;border-top-color:rgba(40,32,20,.08)}
+body.light .lyr-label{color:rgba(90,60,25,.75)}
+body.light .lyr-src{color:rgba(34,28,20,.7);border-color:rgba(40,32,20,.18)}
+body.light .lyr-refresh{color:rgba(34,28,20,.65)}
+body.android .lyr-head{padding:2px 6px 6px 16px}
+body.android .lyr-line{font-size:var(--lyr-size,14px);line-height:1.42;padding:5px 0}
+body.android .lyr-empty p{font-size:12px}
+
+/* 曲库：单栏；歌单侧栏改成顶部横向 chips */
+body.android .lib-view{
+  grid-template-columns:1fr;grid-template-areas:"side" "main";grid-template-rows:auto 1fr;
+  margin:0;border:0;border-radius:0;box-shadow:none;
+  background:#0B0A10;
+}
+body.android .lib-side{
+  display:flex;flex-direction:row;align-items:center;gap:6px;
+  overflow-x:auto;overflow-y:hidden;padding:8px 10px;min-height:0;
+  border-right:0;border-bottom:1px solid var(--line-soft);
+  -webkit-overflow-scrolling:touch;
+}
+body.android .lib-side::-webkit-scrollbar{height:0}
+body.android #libBack,
+body.android .lib-side-cap{display:none}
+body.android .lib-pls{display:flex;flex-direction:row;gap:6px;flex:0 0 auto;overflow:visible;min-height:0;padding:0}
+body.android .lib-pl{
+  flex:0 0 auto;height:32px;padding:0 12px;margin:0;border-radius:16px;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);
+}
+body.android .lib-pl.on{background:rgba(228,194,154,.16);border-color:rgba(228,194,154,.4)}
+body.android .lib-pl .pl-n{font-size:11px;max-width:120px}
+body.android .lib-pl .pl-c{font-size:9px;opacity:.55}
+body.android #libNew{
+  flex:0 0 auto;height:32px;margin:0;padding:0 12px;border-radius:16px;font-size:10px;
+  white-space:nowrap;
+}
+body.android .lib-main{padding:8px 12px 0}
+body.android .lib-head{padding-bottom:8px;flex-wrap:wrap;gap:6px}
+body.android .lib-head .search{flex:1 1 auto;height:38px;min-width:0}
+body.android #libPickFolder,body.android #libPickFiles{display:none}
+body.android .lib-cols{display:none}
+body.android .lib-list{padding-bottom:64px}
+body.android .lib-foot{display:none}
+body.android .lib-now{
+  height:58px;padding:0 12px;gap:10px;z-index:45;
+}
+body.android .lib-now .ln-txt{width:auto!important;flex:1 1 auto;min-width:0}
+body.android .lib-now .ln-name{font-size:12.5px}
+body.android .lib-now .ln-sub{font-size:10px}
+body.android .lib-now .ln-art{width:36px;height:36px;border-radius:9px}
+body.android .lib-now .ln-btn{width:38px;height:38px}
+/* 手机迷你条：进度条改成贴底整条，始终可见 */
+body.android .lib-now .ln-bar{
+  position:absolute;left:0;right:0;bottom:0;height:3px;flex:none;border-radius:0;
+  background:rgba(243,238,231,.10);
+}
+body.android .lib-now .ln-bar i{
+  height:3px;border-radius:0;
+  background:linear-gradient(90deg,var(--gold-deep),var(--gold) 55%,var(--gold-lit));
+  box-shadow:0 0 8px rgba(228,194,154,.7);
+}
+body.android .lib-now .ln-art-icon{width:20px;height:20px}
+body.android .lib-now .ln-art{color:rgba(243,238,231,.42)}
+body.android .lrow{
+  grid-template-columns:22px 38px minmax(0,1.5fr) minmax(0,.9fr) 38px;
+  gap:7px;padding:8px 8px;
+}
+body.android .l-num{font-size:9px}
+body.android .l-th{width:34px;height:34px;border-radius:8px}
+body.android .l-name{font-size:12.5px}
+body.android .l-artist{font-size:10px}
+body.android .l-album{display:none}
+body.android .l-dur{font-size:10px}
+body.android .lib-foot{font-size:9px;padding:8px 10px}
+body.android .lib-now{height:62px;padding:0 14px}
+body.android .lib-now .ln-name{font-size:12px}
+body.android .lib-now .ln-sub{font-size:10px}
+body.android .lib-now .ln-art{width:38px;height:38px;border-radius:9px}
+body.android .selbar{flex-wrap:wrap;gap:6px;padding-bottom:8px}
+body.android .selbar .mini-btn{height:30px;font-size:10px;padding:0 9px}
+body.android .mini-btn{height:34px}
+body.android .lib-empty{padding:40px 18px;font-size:12px}
+
+/* 设置页 */
+body.android .set-view{margin:0;border:0;border-radius:0;box-shadow:none}
+body.android .set-inner{padding:12px 16px 20px}
+body.android .set-title{font-size:17px;margin:2px 0 16px 2px}
+body.android .set-card{padding:12px 14px 14px;margin-bottom:14px;border-radius:12px}
+body.android .set-row{min-height:32px;gap:8px}
+body.android .set-chip{padding:7px 14px;font-size:11px}
+
+body.android .online-view{margin:0;border:0;border-radius:0;box-shadow:none;background:#0B0A10}
+body.android .online-head{flex-wrap:wrap;padding:10px 12px;gap:8px}
+body.android .online-head .lib-back{flex:0 0 auto;padding:0 10px}
+body.android .online-head .search{flex:1 1 100%;order:2;height:38px}
+body.android .on-sel{order:3;flex:1 1 auto;height:34px;font-size:11px}
+body.android #onGo{order:4;height:34px}
+body.android .on-status{padding:8px 14px 0}
+body.android .on-row{padding:8px 10px;gap:8px}
+body.android .on-name{font-size:12.5px}
+body.android .on-sub{font-size:10px}
+body.android .on-foot{font-size:9.5px;padding:8px 14px 10px}
+
+/* 弹出面板铺满手机宽度 */
+body.android .sheet{width:100%;max-width:100%;left:0;right:0;bottom:0;border-radius:18px 18px 0 0}
+body.android .sheet-head{padding:16px 18px 10px}
+body.android .scrim{z-index:60}
+
+/* 手机端不提供内置壁纸（那几张横图不适配手机），只保留「选择本机图片」 */
+body.android #wallGrid,
+body.android #wallCycle,
+body.android #setWallCard .set-hint{display:none}
+body.android #setWallCard .set-row{margin-top:0}
+
+/* 底部固定播放条：进度条 + 控制键 + 歌曲/歌词切换 */
+body.android #mobBar{
+  position:fixed;left:0;right:0;bottom:0;z-index:48;
+  padding:2px 16px 8px;
+  background:linear-gradient(180deg,rgba(10,9,15,.55),rgba(7,6,11,.98) 42%);
+  border-top:1px solid rgba(255,255,255,.06);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+}
+body.android #mobTabs{display:flex;flex:1 1 auto;justify-content:center;gap:8px;padding:0}
+body.android #mobTabs button{
+  border:0;background:rgba(255,255,255,.05);color:rgba(243,238,231,.42);
+  font-family:inherit;font-size:10.5px;letter-spacing:.18em;padding:5px 16px;border-radius:14px;
+}
+body.android #mobTabs button.on{color:#0B0A10;background:var(--gold-lit)}
+body.android #mobTop{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 0 0}
+body.android #mobTop #btnMode{
+  width:34px;height:30px;flex:0 0 auto;border-radius:15px;display:grid;place-items:center;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);color:var(--gold-lit);
+}
+body.android #mobTop #mobTune{
+  width:34px;height:30px;flex:0 0 auto;border-radius:15px;
+  background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);
+  color:var(--gold-lit);font-family:inherit;font-size:9.5px;letter-spacing:.02em;
+}
+body.light #mobTop #mobTune{background:rgba(40,32,20,.06);border-color:rgba(40,32,20,.12);color:#8A5A22}
+body.android #mobTop #btnMode svg{display:none}
+body.android #mobTop #btnMode::after{content:'顺序';font-size:9px;letter-spacing:.04em;color:inherit}
+body.android #mobTop #btnMode.m-shuffle::after{content:'随机'}
+body.android #mobTop #btnMode.m-one::after{content:'单曲'}
+body.android #mobTop #btnMode .loop-one{display:none}
+body.android .mob-sp{width:30px;flex:0 0 auto}
+body.android #mobBar .seek-wrap{margin:0;width:100%;padding:0}
+body.android #mobBar .seek-wrap{padding-top:8px}
+body.android #mobBar .seek{margin-top:2px}
+body.android #mobBar .seek-time{font-size:9px;margin-top:2px}
+body.android #mobBar .transport{margin:0;padding:2px 0 6px;gap:36px;justify-content:center}
+body.android #mobBar .transport .ctl{width:38px;height:38px}
+body.android #mobBar .transport .ctl.play{width:52px;height:52px}
+body.android #libOrder{height:38px;padding:0 12px;font-size:10.5px}
+body.android #btnMode .loop-one{display:none}
+
+/* 手机启动页尺寸 */
+body.android .boot-sigil{width:104px;height:104px;margin-bottom:34px}
+body.android .boot-sigil svg{width:104px;height:104px}
+body.android .sigil-orbit{inset:-44px}
+body.android .boot-word{font-size:30px;letter-spacing:.24em;gap:.26em}
+body.android .boot-slogan{margin-top:20px;gap:10px;padding:0 14px}
+body.android .bs-line{font-size:13.5px;letter-spacing:.14em}
+body.android .bs-2{font-size:11.5px;letter-spacing:.16em}
+body.android .boot-meter{width:76vw;margin-top:34px}
+body.android .boot-skip{bottom:26px;font-size:9.5px}
+
+/* 安卓壳：切到曲库/设置/搜索时，播放页必须让位（否则和 body.android #main 的 flex 规则打架） */
+body.android.lib-mode #main,
+body.android.set-mode #main,
+body.android.online-mode #main,
+body.android.lib-mode .lyrics-panel,
+body.android.set-mode .lyrics-panel{display:none!important}
+/* 这三个页面没有底部 dock，网格只留一行，避免底部露出空白的 64px 黑条 */
+body.android.lib-mode #app,
+body.android.set-mode #app,
+body.android.online-mode #app{grid-template-rows:1fr}
+body.android.lib-mode .lib-view{display:grid}
+body.android.set-mode .set-view{display:none}
+body.android.set-mode:not(.admin-mode):not(.friends-mode) #settingsView{display:block}
+body.android.set-mode.admin-mode #adminView{display:block}
+body.android.set-mode.friends-mode #friendsView{display:block}
+body.android.online-mode .online-view{display:flex}
+
+/* 手机端：壁纸统一由外壳 #wallBg 铺满整屏，内嵌页面用同图当底色，避免两层叠出灰 */
+html.android,html.android.light{background-color:transparent!important}
+body.android{background-color:transparent!important}
+body.android #bg{background-color:transparent!important}
+body.android #app{background-color:transparent!important}
+body.android .bg-wall{display:none!important}
+body.android .orb{display:none!important}
+body.android .bg-veil{opacity:.62}
+body.light.android .bg-veil{opacity:.55}
+body.android.wall-on .bg-veil{opacity:.45}
+
+/* ══════════ 白昼模式（浅色调）══════════ */
+body.light.android{background-color:transparent!important}
+body.light.android #bg{background-color:transparent!important}
+html.light,body.light{background:#F7F4EE}
+body.light #app{background:transparent}
+body.light #bg{background:radial-gradient(120% 90% at 50% 0%,#FFFFFF 0%,#F7F2E9 55%,#EFE6D6 100%)}
+body.light .bg-art,
+body.light .bg-grain{display:none!important}
+/* 白昼模式下，只有没开壁纸时才隐藏壁纸层；选了自定义壁纸要能看见 */
+body.light:not(.wall-on) .bg-wall{display:none!important}
+/* 关键：桌面版的深色蒙版 .bg-veil 必须换成浅色，否则整个界面发灰 */
+body.light .bg-veil{
+  background:
+    radial-gradient(120% 90% at 18% 8%,rgba(228,194,154,.16),transparent 55%),
+    radial-gradient(90% 80% at 88% 92%,rgba(156,140,234,.10),transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.34) 0%,rgba(255,251,244,.58) 45%,rgba(252,246,236,.86) 100%);
+}
+/* 有自定义壁纸时：白昼模式把蒙版压得更透，让图片透出来 */
+body.light.wall-on .bg-veil{
+  background:
+    radial-gradient(120% 90% at 18% 8%,rgba(255,255,255,.06),transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.18) 0%,rgba(255,251,244,.30) 55%,rgba(252,246,236,.46) 100%);
+}
+/* 各页面对壁纸的模糊处理：统一走 --wall-filter（设置里的亮度/模糊），这里只做额外缩放 */
+body.android.wall-on.lib-mode .bg-wall,
+body.android.wall-on.set-mode .bg-wall,
+body.android.wall-on.online-mode .bg-wall{
+  transform:scale(1.10);
+}
+/* 有自定义壁纸时：壁纸由外壳整屏铺，内嵌页面用轻薄玻璃，让壁纸颜色透出来 */
+body.android.wall-on .lib-view,
+body.android.wall-on .set-view,
+body.android.wall-on .online-view{
+  margin:10px 12px 0;border-radius:16px 16px 0 0;overflow:hidden;
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 18px 50px -30px rgba(0,0,0,.45);
+  background:linear-gradient(180deg,rgba(10,9,14,.62) 0%,rgba(7,6,11,.72) 100%);
+  -webkit-backdrop-filter:blur(30px) saturate(125%);
+  backdrop-filter:blur(30px) saturate(125%);
+}
+body.light.wall-on .lib-view,
+body.light.wall-on .set-view,
+body.light.wall-on .online-view{
+  background:linear-gradient(180deg,rgba(255,255,255,.68) 0%,rgba(250,246,238,.76) 100%);
+  border-color:rgba(40,32,20,.08);
+  box-shadow:0 18px 50px -30px rgba(60,45,20,.28);
+}
+/* 播放页文字在壁纸上加一点投影，保证可读 */
+body.android.wall-on .meta-title,
+body.android.wall-on .meta-artist,
+body.android.wall-on .meta-album{text-shadow:0 1px 14px rgba(0,0,0,.45)}
+body.light.android.wall-on .meta-title,
+body.light.android.wall-on .meta-artist,
+body.light.android.wall-on .meta-album{text-shadow:0 1px 12px rgba(255,255,255,.85)}
+/* 有壁纸时：底部播放条跟随主题做成实底，和外层导航条连成一体 */
+body.android.wall-on #mobBar{
+  background:linear-gradient(180deg,rgba(10,9,15,.62),#0B0A10 72%);
+  border-top-color:rgba(255,255,255,.07);
+}
+body.light.wall-on #mobBar{
+  background:linear-gradient(180deg,rgba(250,246,238,.62),#FAF6EE 72%);
+  border-top-color:rgba(40,32,20,.08);
+}
+body.android.wall-on .lib-now{background:linear-gradient(180deg,rgba(10,9,15,.55),#0B0A10 75%)}
+body.light.wall-on .lib-now{background:linear-gradient(180deg,rgba(250,246,238,.55),#FAF6EE 75%)}
+/* 有壁纸时播放页蒙版压到最淡，让壁纸真正看得出来 */
+body.android.wall-on .bg-veil{
+  background:
+    radial-gradient(120% 90% at 18% 8%,rgba(228,194,154,.06),transparent 55%),
+    radial-gradient(90% 80% at 88% 92%,rgba(107,91,196,.08),transparent 60%),
+    linear-gradient(180deg,rgba(6,6,10,.10) 0%,rgba(6,6,10,.20) 45%,rgba(4,4,7,.38) 100%);
+}
+body.light.wall-on .bg-veil{
+  background:
+    radial-gradient(120% 90% at 18% 8%,rgba(255,255,255,.04),transparent 60%),
+    linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,251,244,.18) 55%,rgba(252,246,236,.34) 100%);
+}
+body.light .orb{opacity:.18}
+body.light .lyr-line.past{opacity:.75}
+body.light .lyr-line.active{font-weight:500}
+body.android .set-view,body.android .lib-view,body.android .online-view{min-height:100%}
+body.light{
+  --ink:#F7F4EE; --ink-2:#FBF9F5; --ink-3:#FFFFFF;
+  --paper:#221C14; --paper-dim:rgba(34,28,20,.72); --paper-faint:rgba(34,28,20,.45);
+  --gold:#B07C3E; --gold-lit:#8A5A22; --gold-deep:#D3A76E;
+  --violet:#6C5BB8; --violet-deep:#4B3E8F;
+  --line:rgba(40,32,20,.14); --line-soft:rgba(40,32,20,.08);
+  --glass:rgba(255,255,255,.66); --glass-lit:rgba(255,255,255,.86);
+}
+body.light #bg{background:radial-gradient(120% 90% at 50% 0%,#FDFCF9 0%,#F3EDE2 60%,#EAE2D2 100%)}
+body.light #frame{border-color:rgba(160,120,70,.22)}
+body.light .tb-mark{color:rgba(34,28,20,.55)}
+body.light .lib-view,body.light .set-view,body.light .online-view{
+  background:linear-gradient(180deg,#FFFFFF 0%,#F9F5EE 100%);
+  border-color:rgba(40,32,20,.10);
+  box-shadow:0 22px 60px -34px rgba(70,50,20,.35),inset 0 1px 0 #fff;
+}
+body.light .lib-side{border-right-color:rgba(40,32,20,.08)}
+body.light .lib-pl.on{background:rgba(176,124,62,.14);border-color:rgba(176,124,62,.4)}
+.adm-tag.pend{background:rgba(228,120,40,.18);color:#e8a04a;border-color:rgba(228,120,40,.45)}
+body.light .adm-tag.pend{background:rgba(200,90,20,.12);color:#b45309;border-color:rgba(200,90,20,.35)}
+/* 白昼模式：歌单 tab / 新建按钮 / 选中栏文字加深 */
+body.light .lib-pl{color:rgba(34,28,20,.72)}
+body.light .lib-pl svg{opacity:.55}
+body.light .lib-pl .pl-c{color:rgba(34,28,20,.4)}
+body.light .lib-pl:hover{color:#221c14;background:rgba(0,0,0,.05)}
+body.light .lib-pl.on{color:#8a5a20}
+body.light .lib-new{color:rgba(34,28,20,.78);border-color:rgba(40,32,20,.28)}
+body.light .lib-new:hover{color:#8a5a20;border-color:rgba(176,124,62,.55);background:rgba(176,124,62,.08)}
+body.light .sel-t{color:rgba(34,28,20,.72)}
+body.light .sel-t em{color:#8a5a20}
+body.light .selbar .mini-btn{color:rgba(34,28,20,.72)}
+body.light .selbar .mini-btn.on{color:#8a5a20}
+body.light .lrow:hover{background:rgba(60,45,20,.05)}
+body.light .lrow.cur{background:rgba(176,124,62,.12)}
+body.light .l-name{color:rgba(34,28,20,.9)}
+body.light .l-artist,body.light .l-album,body.light .l-dur,body.light .l-num{color:rgba(34,28,20,.66)}
+body.light .l-th{background:rgba(40,32,20,.06);border-color:rgba(40,32,20,.08);color:rgba(34,28,20,.25)}
+body.light .lib-empty{color:rgba(34,28,20,.45)}
+body.light .search,body.light .set-num{background:rgba(255,255,255,.92);color:var(--paper);border-color:rgba(40,32,20,.14)}
+body.light .mini-btn{background:rgba(255,255,255,.85);color:var(--paper);border-color:rgba(40,32,20,.14)}
+body.light .mini-btn.ghost{background:rgba(255,255,255,.55)}
+body.light .mini-btn.danger{color:#A33B2E;border-color:rgba(163,59,46,.3)}
+body.light .set-card{background:rgba(255,255,255,.78);border-color:rgba(40,32,20,.08)}
+body.light .set-card-title{color:rgba(34,28,20,.82)}
+body.light .set-chip{background:#fff;border-color:rgba(40,32,20,.14);color:rgba(34,28,20,.75)}
+body.light .set-chip.on{background:linear-gradient(140deg,#F6E7CE,#EAD3AE);border-color:rgba(176,124,62,.45);color:#5B3D16}
+body.light .set-unit{color:rgba(34,28,20,.65)}
+body.light .set-hint{color:rgba(34,28,20,.5)}
+body.light .set-status{color:#8A5A22}
+body.panel-say-nothing{}
+body.light .set-title{color:rgba(34,28,20,.85)}
+body.light .lyr-line.past{opacity:.68}
+body.light .lyr-refresh{color:rgba(34,28,20,.45)}
+body.light .lyr-refresh:hover{color:#8A5A22;background:rgba(40,32,20,.07)}
+body.light .lyr-label{color:rgba(34,28,20,.45)}
+body.light .lyr-src{color:rgba(34,28,20,.55);border-color:rgba(40,32,20,.16)}
+body.light .lyr-empty .le-q{color:rgba(34,28,20,.2)}
+body.light .lyr-empty p{color:rgba(34,28,20,.65)}
+body.light .lyr-empty small{color:rgba(34,28,20,.4)}
+body.light .lyr-body{background:transparent}
+body.light .meta-title{color:#2A2116}
+body.light .meta-artist,body.light .meta-album{color:rgba(34,28,20,.55)}
+body.light .meta-eyebrow{color:rgba(176,124,62,.85)}
+body.light .seek::before{background:rgba(34,28,20,.15)}
+body.light .seek-time{color:rgba(34,28,20,.5)}
+body.light .art{background:linear-gradient(150deg,#F2EADC,#FFFDF9);
+  box-shadow:0 18px 40px -22px rgba(80,60,30,.5),inset 0 0 0 1px rgba(255,255,255,.85)}
+body.light .ctl{color:rgba(34,28,20,.62)}
+body.light .ctl.play{background:linear-gradient(155deg,#F9EBD3,#E7C99A);color:#4A3313;
+  box-shadow:0 10px 26px -12px rgba(176,124,62,.55),inset 0 0 0 1px rgba(255,255,255,.55)}
+body.light .dock{color:rgba(34,28,20,.6)}
+body.light #mobBar{background:linear-gradient(180deg,rgba(255,255,255,.55),#F7F2E8 55%);
+  border-top-color:rgba(40,32,20,.10)}
+body.light #mobTabs button{background:rgba(40,32,20,.06);color:rgba(34,28,20,.55)}
+body.light #mobTabs button.on{background:linear-gradient(150deg,#F8EAD3,#E8CCA2);color:#4A3313}
+body.light #mobTop #btnMode{background:rgba(40,32,20,.06);border-color:rgba(40,32,20,.12);color:#8A5A22}
+body.light .lib-now{background:linear-gradient(180deg,rgba(255,255,255,.6),#F7F2E8 52%)}
+body.light .lib-now .ln-bar{background:rgba(34,28,20,.12)}
+body.light .lib-now .ln-art{background:rgba(40,32,20,.06);border-color:rgba(40,32,20,.10);color:rgba(34,28,20,.45)}
+body.light .ln-name{color:rgba(34,28,20,.9)}
+body.light .ln-sub{color:rgba(34,28,20,.5)}
+body.light .on-foot,body.light .on-status{color:rgba(34,28,20,.55)}
+body.light #onQuality,body.light .on-sel{
+  background:#FFFFFF!important;color:#2A2116!important;
+  -webkit-text-fill-color:#2A2116;
+  border-color:rgba(40,32,20,.18)!important;
+}
+body.light .on-sel option{background:#FFFFFF!important;color:#2A2116!important;-webkit-text-fill-color:#2A2116}
+body.light input::placeholder,body.light textarea::placeholder{color:rgba(34,28,20,.34)}
+body.light .on-badge{background:rgba(176,124,62,.12);color:#8A5A22;border-color:rgba(176,124,62,.28)}
+body.light .on-row:hover{background:rgba(60,45,20,.05)}
+body.light .boot-skip{color:rgba(34,28,20,.3)}
+body.light .toast{background:rgba(255,252,246,.97);color:#2A2116;border-color:rgba(176,124,62,.3)}
+body.light .sheet{background:linear-gradient(180deg,#FFFFFF,#F7F2E8)}
+body.light .sheet-head{color:rgba(34,28,20,.8)}
+body.light .on-status{color:rgba(34,28,20,.55)}
+body.light .on-sub{color:rgba(34,28,20,.5)}
+body.light .on-foot{color:rgba(34,28,20,.42)}
+body.light .on-batch-list{color:rgba(34,28,20,.6)}
+body.light .on-batch-item .st{color:rgba(34,28,20,.4)}
+body.light .on-batch-item.ok .st{color:#3F7A4E}
+body.light .on-batch-item.bad .st{color:#B0402F}
+body.light .on-batch-item.run .st{color:#8A5A22}
+
+/* 窄屏兜底（桌面窗口很小时也生效） */
+@media (max-width:560px){
+  #titlebar{padding-left:14px;padding-right:10px}
+  #main{grid-template-columns:1fr;grid-template-rows:auto auto}
+  .stage{padding:2px 16px 0}
+  .art{width:160px;height:160px}
+  .lyrics-panel{height:34vh;min-height:150px;padding:4px 14px 8px}
+  .dock{display:none}
+  .lib-view{grid-template-columns:1fr}
+  .lib-side{display:none}
+  .lib-cols{display:none}
+  .lrow{grid-template-columns:22px 38px minmax(0,1.5fr) minmax(0,.9fr) 38px;gap:6px}
+  .l-album{display:none}
+}
+
+/* ══════════ 白昼模式：调校/抽屉面板文字配色（桌面版是浅字，浅色背景上会看不见） ══════════ */
+body.light .sheet{
+  background:linear-gradient(165deg,#FFFFFF 0%,#FBF7F0 100%);
+  border-color:rgba(40,32,20,.10);
+  box-shadow:0 24px 60px -30px rgba(60,45,20,.38);
+}
+body.light .sheet-title{color:#2A2116}
+body.light .sheet-sub{color:rgba(34,28,20,.50)}
+body.light .sheet-x{color:rgba(34,28,20,.42)}
+body.light .tune-h span{color:rgba(34,28,20,.84)}
+body.light .tune-h em{color:#8A5A22}
+body.light .eq-rows label span{color:rgba(34,28,20,.62)}
+body.light .eq-rows em{color:#8A5A22}
+body.light .tune-note{color:rgba(34,28,20,.44)}
+body.light .quick-row button{
+  color:rgba(34,28,20,.66);background:#fff;border-color:rgba(40,32,20,.12);
+}
+body.light .eq-presets button{
+  color:rgba(34,28,20,.62);background:#fff;border-color:rgba(40,32,20,.12);
+}
+body.light .eq-presets button.on{
+  color:#5B3D16;background:linear-gradient(140deg,#F6E7CE,#EAD3AE);
+  border-color:rgba(176,124,62,.45);
+}
+body.light .toggle-row span{color:rgba(34,28,20,.82)}
+body.light .tune-block{border-top-color:rgba(40,32,20,.08)}
+body.light .tune-scroll::-webkit-scrollbar-thumb{background:rgba(40,32,20,.16)}
+
+/* ══════════ 白昼模式：滑杆轨道/滑块对比（浅底上白灰色几乎看不见） ══════════ */
+body.light .slider::-webkit-slider-runnable-track{
+  height:3px;border-radius:3px;
+  background:linear-gradient(90deg,var(--gold) 0%,var(--gold) var(--p,50%),rgba(34,28,20,.18) var(--p,50%));
+}
+body.light .slider::-webkit-slider-thumb{
+  -webkit-appearance:none;width:12px;height:12px;border-radius:50%;margin-top:-4.5px;
+  background:#B07C3E;
+  box-shadow:0 0 0 2px #FFF8EC,0 0 10px rgba(176,124,62,.55);
+}
+body.light .slider.bipolar::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,
+    rgba(34,28,20,.20) 0 var(--lo,50%),
+    var(--gold) var(--lo,50%),var(--gold) var(--hi,50%),
+    rgba(34,28,20,.20) var(--hi,50%));
+}
+body.light .slider.bipolar::-webkit-slider-thumb{
+  background:#8A5A22;box-shadow:0 0 0 2px #FFF8EC,0 0 10px rgba(138,90,34,.55);
+}
+/* 手机上轨道稍粗一点，手指也更好按 */
+body.android .sheet .slider::-webkit-slider-runnable-track{height:3px}
+
+.on-play{
+  flex:0 0 auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  font-size:10px;color:rgba(228,194,154,.85);
+  background:rgba(228,194,154,.10);border:1px solid rgba(228,194,154,.22);
+  margin-right:2px;
+}
+
+body.light .on-play{color:#8A5A22;background:rgba(176,124,62,.10);border-color:rgba(176,124,62,.28)}
+body.light .on-row.playing{background:rgba(176,124,62,.14);box-shadow:inset 2px 0 0 var(--gold)}
+body.light .on-row.playing .on-play{color:#FBF6EC;background:#8A5A22;border-color:#8A5A22}
+
+/* ── 进度条：支持手指拖动（同时扩大触控区） ── */
+.seek{touch-action:none;-webkit-user-select:none;user-select:none}
+body.android .seek{height:24px}
+body.android .seek::before{height:4px}
+body.android .seek-buf,body.android .seek-fill{height:4px}
+body.android .seek-knob{width:14px;height:14px;transform:translateX(-50%) scale(1)}
+body.android .seek.dragging .seek-knob,
+body.android .seek:active .seek-knob{transform:translateX(-50%) scale(1.25)}
+
+/* 歌词头「换一版」按钮 */
+.lyr-alt{
+  margin-left:auto;margin-right:6px;height:22px;padding:0 9px;border-radius:12px;
+  font-family:inherit;font-size:9.5px;letter-spacing:.06em;
+  color:rgba(243,238,231,.55);border:1px solid rgba(255,255,255,.12);
+  background:transparent;transition:.24s var(--ease);
+}
+.lyr-alt:hover{color:var(--gold-lit);border-color:rgba(228,194,154,.4);background:rgba(228,194,154,.08)}
+body.light .lyr-alt{color:rgba(34,28,20,.55);border-color:rgba(40,32,20,.14)}
+body.light .lyr-alt:hover{color:#8A5A22;border-color:rgba(176,124,62,.45);background:rgba(176,124,62,.08)}
+.lyr-head .lyr-src{margin-right:8px}
+.lyr-head .lyr-refresh{margin-left:0}
+
+/* 歌词颜色色板 */
+#lyrColorChips .set-chip{display:inline-flex;align-items:center;gap:6px}
+.lyr-dot{
+  width:12px;height:12px;border-radius:50%;display:inline-block;flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.35);box-shadow:0 0 6px rgba(0,0,0,.22);
+}
+body.light .lyr-dot{border-color:rgba(40,32,20,.22)}
+#lyrColorPick{border-radius:8px;overflow:hidden}
+
+/* ── 曲库顶部：歌单横向滚动 + 新建按钮固定右侧，永不重叠 ── */
+body.android .lib-side{
+  display:flex;flex-direction:row;align-items:center;gap:8px;
+  overflow:hidden;padding:8px 10px;
+}
+body.android .lib-pls{
+  flex:1 1 auto;min-width:0;display:flex;flex-direction:row;gap:6px;
+  overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+  padding:0 2px;
+}
+body.android .lib-pls::-webkit-scrollbar{height:0}
+body.android .lib-pl{flex:0 0 auto;width:auto;margin:0;white-space:nowrap;max-width:56vw}
+body.android .lib-pl .pl-n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.android #libNew{
+  flex:0 0 auto;margin:0;height:32px;padding:0 10px;border-radius:16px;
+  font-size:10px;white-space:nowrap;letter-spacing:0;
+}
+body.android .lib-pls{
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent);
+  mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent);
+}
+
+/* ── 选歌入库面板 ── */
+.pick-sheet .pick-bar{display:flex;gap:8px;padding:0 26px 10px;align-items:center;flex:0 0 auto}
+.pick-bar .search{flex:1;height:36px}
+.pick-list{flex:1;overflow-y:auto;padding:0 20px 10px}
+.pick-row{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;margin-bottom:4px;
+  border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);cursor:pointer;
+}
+.pick-row.on{border-color:rgba(228,194,154,.42);background:rgba(228,194,154,.09)}
+.pick-row input{width:16px;height:16px;flex:0 0 auto;accent-color:#E4C29A}
+.pick-txt{flex:1;min-width:0}
+.pick-nm{font-size:12px;color:rgba(243,238,231,.86);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pick-sub{font-size:9.5px;color:rgba(243,238,231,.42);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pick-foot{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 26px 14px;border-top:1px solid rgba(255,255,255,.08);flex:0 0 auto;
+}
+.pick-info{font-size:10.5px;letter-spacing:.06em;color:rgba(243,238,231,.5)}
+body.light .pick-row{background:rgba(255,255,255,.55);border-color:rgba(40,32,20,.08)}
+body.light .pick-row.on{background:rgba(176,124,62,.12);border-color:rgba(176,124,62,.4)}
+body.light .pick-nm{color:#2A2116}
+body.light .pick-sub{color:rgba(34,28,20,.45)}
+body.light .pick-info{color:rgba(34,28,20,.6)}
+body.light .pick-sheet{background:linear-gradient(165deg,#FFFFFF,#FBF7F0)}
+
+/* ── 设置 · 版本信息 ── */
+
+body.android #setWechatCard{display:none}
+
+/* 当前版本号 */
+
+/* ═══════════ 电脑版：左侧导航栏 + 首页（手机版隐藏） ═══════════ */
+#pcRail{
+  position:fixed;left:0;top:38px;bottom:80px;width:64px;z-index:45;
+  display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px;
+  background:linear-gradient(180deg,rgba(10,9,15,.55),rgba(7,6,11,.78));
+  border-right:1px solid rgba(255,255,255,.06);
+  backdrop-filter:blur(18px) saturate(130%);
+}
+.rail-btn{
+  width:52px;height:56px;border-radius:12px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;font-size:9.5px;letter-spacing:.04em;
+  color:rgba(243,238,231,.5);transition:.24s var(--ease);
+}
+.rail-btn svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.5}
+.rail-btn:hover{color:var(--gold-lit);background:rgba(228,194,154,.08)}
+.rail-btn.on{color:var(--gold-lit);background:rgba(228,194,154,.12)}
+body.light #pcRail{background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(247,242,232,.92));border-right-color:rgba(40,32,20,.08)}
+body.light .rail-btn{color:rgba(34,28,20,.5)}
+body.light .rail-btn:hover,body.light .rail-btn.on{color:#8A5A22;background:rgba(176,124,62,.1)}
+
+body:not(.android) #main{margin-left:64px}
+body:not(.android) .dock{padding-left:94px}
+
+#pcHome{
+  position:fixed;left:64px;right:0;top:38px;bottom:80px;z-index:20;
+  display:none;align-items:center;justify-content:center;overflow:hidden;
+}
+body.pc-home #pcHome{display:flex}
+body.pc-home #main{visibility:hidden}
+.pc-home-inner{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px}
+.pc-sigil{width:92px;height:92px;opacity:.95}
+.pc-sigil svg{width:100%;height:100%}
+.pc-brand{font-family:var(--serif);font-size:40px;letter-spacing:.34em;color:var(--gold-lit);padding-left:.34em;display:flex;align-items:center;gap:10px}
+.pc-brand i{width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.pc-slogan{font-size:12px;letter-spacing:.4em;color:rgba(243,238,231,.55);margin-bottom:10px}
+.pc-cards{display:grid;grid-template-columns:repeat(2,220px);gap:14px;margin-top:6px}
+.pc-card{
+  border-radius:16px;padding:20px 18px;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  display:flex;flex-direction:column;gap:8px;transition:.22s var(--ease);
+}
+.pc-card:hover{background:rgba(228,194,154,.1);border-color:rgba(228,194,154,.3);transform:translateY(-2px)}
+.pc-card b{font-size:15px;font-weight:500;letter-spacing:.08em}
+.pc-card span{font-size:10.5px;color:rgba(243,238,231,.55);letter-spacing:.04em}
+.pc-tip{margin-top:18px;font-size:10.5px;letter-spacing:.12em;color:rgba(243,238,231,.32)}
+body.light .pc-brand{color:#8A5A22}
+body.light .pc-slogan{color:rgba(34,28,20,.6)}
+body.light .pc-card{background:rgba(255,255,255,.72);border-color:rgba(40,32,20,.1)}
+body.light .pc-card b{color:#2A2116}
+body.light .pc-card span{color:rgba(34,28,20,.52)}
+body.light .pc-tip{color:rgba(34,28,20,.42)}
+body.android #pcRail,body.android #pcHome{display:none!important}
+
+/* 白昼模式：返回 / 换一版 / 刷新 这些图标按钮要看清 */
+body.light .lib-back{color:rgba(34,28,20,.75);border-color:rgba(40,32,20,.16);background:rgba(255,255,255,.6)}
+body.light .lib-back:hover{color:#8A5A22;border-color:rgba(176,124,62,.4)}
+body.light .lyr-alt{color:rgba(34,28,20,.78);border-color:rgba(40,32,20,.22)}
+body.light .lyr-refresh{color:rgba(34,28,20,.72)}
+
+/* 电脑版：曲库/设置/搜索这些整屏面板要给左侧导航栏让位，避免被压住 */
+body:not(.android) .lib-view,
+body:not(.android) .set-view,
+body:not(.android) .online-view{
+  margin-left:74px;
+}
+
+/* 下载设置：当前目录显示 */
+.dl-dir{
+  flex:1;min-width:0;font-size:11px;letter-spacing:.02em;color:rgba(243,238,231,.72);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;
+}
+body.light .dl-dir{color:rgba(34,28,20,.72)}
+/* 手机版下载目录固定，不显示这个设置卡片 */
+body.android #setDownloadCard{display:none}
+
+/* 歌曲信息编辑 + 补全歌手按钮 */
+.meta-sheet{max-width:520px}
+.meta-body{display:flex;flex-direction:column;gap:12px;padding:6px 26px 4px}
+.meta-row{display:flex;align-items:center;gap:12px}
+.meta-row > span{flex:0 0 46px;font-size:12px;color:rgba(243,238,231,.62);letter-spacing:.08em}
+.meta-row .ask-input{flex:1;width:auto}
+.meta-foot{display:flex;align-items:center;gap:10px;padding:14px 26px 18px}
+.meta-path{flex:1;min-width:0;font-size:10px;color:rgba(243,238,231,.35);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.light .meta-row > span{color:rgba(34,28,20,.66)}
+body.light .meta-path{color:rgba(34,28,20,.38)}
+body.android #libFixMeta{display:none}
+
+/* 账号与同步 */
+.sync-state{font-size:12px;color:rgba(243,238,231,.75);letter-spacing:.02em}
+.sync-row{display:flex;gap:10px;align-items:center;margin-top:12px}
+.sync-input{flex:1;width:auto;font-size:12px}
+body.light .sync-state{color:rgba(34,28,20,.75)}
+body.android #syncCard{display:none}
+
+/* 同步：资料 / 时长 / 排行榜 */
+.sync-profile{display:flex;align-items:center;gap:12px;margin-top:12px}
+.sync-avatar{width:42px;height:42px;border-radius:50%;flex:0 0 auto;overflow:hidden;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(243,238,231,.6);
+  background-size:cover;background-position:center}
+.sync-name{flex:1;width:auto;font-size:12px}
+.sync-stats{margin-top:10px;font-size:11.5px;color:rgba(243,238,231,.62);letter-spacing:.02em}
+.sync-lb-title{margin-top:14px;font-size:10.5px;letter-spacing:.24em;color:rgba(243,238,231,.42)}
+.sync-lb{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.sync-lb-row{display:flex;align-items:center;gap:10px;font-size:11.5px;color:rgba(243,238,231,.78)}
+.sync-lb-row .rank{width:18px;color:rgba(228,194,154,.85);font-family:var(--serif)}
+.sync-lb-row .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sync-lb-row .hr{color:rgba(243,238,231,.5)}
+body.light .sync-stats{color:rgba(34,28,20,.62)}
+body.light .sync-lb-title{color:rgba(34,28,20,.42)}
+body.light .sync-lb-row{color:rgba(34,28,20,.78)}
+/* 浅色主题：时长/最近登录等次要文字原本是深色主题的浅白，看不清 */
+body.light .sync-lb-row .hr{color:rgba(34,28,20,.62)}
+body.light .sync-lb-row .rank{color:#A9762F}
+body.light .friend-row .hr{color:rgba(34,28,20,.6)}
+body.light .lb-id{color:rgba(34,28,20,.5)}
+body.light .sync-avatar{background-color:rgba(40,32,20,.08);border-color:rgba(40,32,20,.12)}
+
+/* 登录门禁 */
+#loginGate{position:fixed;inset:0;z-index:999;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(120% 120% at 50% 30%,rgba(24,20,14,.96),rgba(6,6,10,.985));}
+body.locked #loginGate{display:flex}
+body.locked #app > :not(#loginGate){display:none!important}
+.gate-box{width:min(420px,88vw);display:flex;flex-direction:column;align-items:center;gap:12px;
+  padding:34px 28px;border-radius:20px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(20px)}
+.gate-brand{font-family:var(--serif);font-size:30px;letter-spacing:.34em;color:var(--gold-lit);padding-left:.34em}
+.gate-sub{font-size:12px;color:rgba(243,238,231,.6);letter-spacing:.06em;margin-bottom:6px;text-align:center}
+.gate-input{width:100%;text-align:center;font-size:20px;letter-spacing:.35em;height:52px}
+.gate-btn{width:100%;height:44px;font-size:13px;letter-spacing:.2em}
+.gate-err{min-height:16px;font-size:11px;color:#e0948b;text-align:center}
+.gate-tip{font-size:10.5px;color:rgba(243,238,231,.36);text-align:center;line-height:1.7}
+.acct-meta{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.acct-id{font-size:10.5px;color:rgba(243,238,231,.55)}
+.acct-id b{color:var(--gold-lit);font-weight:600;letter-spacing:.08em}
+.acct-state{font-size:10px;color:rgba(243,238,231,.42);letter-spacing:.04em}
+body.light .acct-state{color:rgba(34,28,20,.48)}
+/* 歌单里本机没有的歌：灰显 + 「未下载」角标 */
+.lrow.offline{opacity:.62}
+.lrow.offline .l-num,.lrow.offline .l-th{opacity:.5}
+.off-tag{display:inline-block;margin-left:6px;padding:1px 5px;border-radius:4px;font-size:9px;
+  color:rgba(224,148,139,.9);border:1px solid rgba(224,148,139,.35);vertical-align:1px;letter-spacing:.04em}
+body.light .off-tag{color:#a8513f;border-color:rgba(168,81,63,.35)}
+body.light .acct-id{color:rgba(34,28,20,.58)}
+body.light .acct-id b{color:#8A5A22}
+body.light #loginGate{background:radial-gradient(120% 120% at 50% 30%,rgba(250,246,238,.98),rgba(240,234,224,.99))}
+body.light .gate-box{background:rgba(255,255,255,.75);border-color:rgba(40,32,20,.12)}
+body.light .gate-brand{color:#8A5A22}
+body.light .gate-sub{color:rgba(34,28,20,.62)}
+body.light .gate-tip{color:rgba(34,28,20,.45)}
+
+/* 管理员：使用情况 */
+.admin-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;max-height:280px;overflow-y:auto}
+.admin-row{display:flex;align-items:center;gap:10px;font-size:11.5px;color:rgba(243,238,231,.8);
+  padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.03)}
+.admin-row .aid{font-family:var(--mono,monospace);color:var(--gold-lit);letter-spacing:.06em;flex:0 0 84px}
+.admin-row .anm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-row .adev{flex:0 0 auto;color:rgba(243,238,231,.42);font-size:10px;max-width:34%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-row .atime{flex:0 0 auto;color:rgba(243,238,231,.55);font-size:10px}
+.admin-row .on{width:6px;height:6px;border-radius:50%;background:#7ec48a;flex:0 0 auto}
+.admin-row .acc-btn{flex:0 0 auto;font-size:10.5px;padding:3px 10px;border-radius:6px;cursor:pointer;
+  border:1px solid rgba(243,238,231,.18);background:transparent;color:rgba(243,238,231,.7);letter-spacing:.04em}
+.admin-row .acc-btn.allow{border-color:rgba(126,196,138,.45);color:#8fd39c}
+.admin-row .acc-btn.deny{border-color:rgba(224,148,139,.5);color:#e0948b}
+.admin-row .acc-btn:hover{background:rgba(243,238,231,.06)}
+.admin-row .acc-btn:disabled{opacity:.5;cursor:default}
+.adm-tag{font-style:normal;margin-left:6px;padding:1px 5px;border-radius:4px;font-size:9px;
+  color:#8A5A22;border:1px solid rgba(200,160,90,.5);background:rgba(200,160,90,.14);letter-spacing:.04em}
+body.light .admin-row .acc-btn{color:rgba(34,28,20,.65);border-color:rgba(40,32,20,.18)}
+body.light .admin-row .acc-btn.allow{color:#2f7d3f;border-color:rgba(47,125,63,.4)}
+body.light .admin-row .acc-btn.deny{color:#a8513f;border-color:rgba(168,81,63,.45)}
+body.light .adm-tag{color:#8A5A22;border-color:rgba(138,90,34,.4);background:rgba(138,90,34,.1)}
+body.light .admin-row{background:rgba(40,32,20,.04);color:rgba(34,28,20,.8)}
+body.light .admin-row .adev,body.light .admin-row .atime{color:rgba(34,28,20,.5)}
+/* 手机屏幕窄：账号行改成两行（ID+昵称+按钮 / 设备+时间），避免昵称被挤没 */
+body.android .admin-row{flex-wrap:wrap;row-gap:3px;padding:7px 9px}
+body.android .admin-row .aid{flex:0 0 auto;order:1;font-size:11px}
+body.android .admin-row .anm{flex:1 1 auto;min-width:0;order:2;font-size:11.5px}
+body.android .admin-row .acc-btn{order:4;flex:0 0 auto}
+body.android .admin-row .note-btn{order:3;flex:0 0 auto}
+body.android .admin-row .adev{order:5;flex:0 0 auto;max-width:62%;font-size:9.5px;padding-left:2px}
+body.android .admin-row .atime{order:6;flex:0 0 auto;font-size:9.5px;margin-left:auto}
+
+/* ═══ 白昼模式：字统一加深，浅色背景上必须看得清 ═══ */
+body.light{color:rgba(24,18,12,.92)}
+body.light .l-name,
+body.light .nm,
+body.light .meta-title,
+body.light .card-title,
+body.light .set-label,
+body.light .lyr-line,
+body.light .lib-title,
+body.light .friend-row .nm{color:rgba(22,16,10,.95)}
+body.light .l-artist,
+body.light .l-album,
+body.light .l-dur,
+body.light .l-num,
+body.light .lib-cols,
+body.light .set-hint,
+body.light .on-batch-tip,
+body.light .friend-orig,
+body.light .lb-id,
+body.light .friend-row .hr,
+body.light .sync-lb-row .hr,
+body.light .sync-lb-row .nm{color:rgba(28,21,14,.8)}
+body.light .off-tag{color:rgba(120,60,20,.95);border-color:rgba(160,90,30,.45)}
+body.light .lib-cols .col{color:rgba(30,23,16,.72)}
+body.light .lrow .l-name{color:rgba(22,16,10,.95)}
+
+/* 拖动歌词时选中的那一行高亮 + 悬浮选句条 */
+.lyr-line{position:relative}
+.lyr-line.picked{background:rgba(228,194,154,.16);border-radius:8px;
+  padding-left:56px;padding-right:50px;
+  box-shadow:inset 0 0 0 1px rgba(228,194,154,.35)}
+.lyr-line.picked .pick-time{
+  display:block;position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  font-size:10px;color:rgba(228,194,154,.9);letter-spacing:.04em;
+  font-variant-numeric:tabular-nums}
+.lyr-line.picked .pick-play{
+  display:flex;position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border-radius:50%;border:1px solid rgba(228,194,154,.75);
+  background:rgba(228,194,154,.28);color:#FFF4E2;
+  align-items:center;justify-content:center;cursor:pointer;z-index:3}
+.lyr-line.picked .pick-play svg{width:18px;height:18px;fill:currentColor;stroke:none;display:block}
+.lyr-line.picked .pick-play:active{transform:translateY(-50%) scale(.92)}
+body.light .lyr-line.picked{background:rgba(176,124,62,.14)}
+body.light .lyr-line.picked .pick-time{color:#8A5A22}
+body.light .lyr-line.picked .pick-play{color:#8A5A22;border-color:rgba(138,90,34,.5);
+  background:rgba(176,124,62,.12)}
+
+/* 拖动选句时的悬浮操作条：时间 + 播放按钮（固定在歌词面板中部右侧） */
+.lyrics-panel{position:relative}
+.lyr-pickbar{
+  position:absolute;right:10px;top:calc(50% - 18px);z-index:12;
+  display:none;align-items:center;gap:8px;
+  padding:4px 6px 4px 10px;border-radius:999px;
+  background:rgba(20,17,26,.78);border:1px solid rgba(228,194,154,.35);
+  box-shadow:0 6px 20px rgba(0,0,0,.35);
+}
+.lyr-pickbar.on{display:flex}
+.lyr-pickbar .pk-time{font-size:11px;color:rgba(243,238,231,.85);font-variant-numeric:tabular-nums}
+.lyr-pickbar .pk-play{
+  width:30px;height:30px;border-radius:50%;border:0;
+  background:linear-gradient(155deg,#FAE9CE,#E4C29A);color:#20180F;
+  display:grid;place-items:center;cursor:pointer;
+}
+.lyr-pickbar .pk-play svg{width:16px;height:16px;fill:currentColor;stroke:none;display:block;margin-left:2px}
+body.light .lyr-pickbar{background:rgba(250,246,238,.94);border-color:rgba(176,124,62,.35)}
+body.light .lyr-pickbar .pk-time{color:rgba(40,32,20,.85)}
