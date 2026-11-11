@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Luvsic</title>
+<link rel="icon" type="image/png" sizes="256x256" href="icon.png?v=6">
+<style>
+  :root{
+    --gold:#E4C29A; --gold-lit:#FAE9CE; --gold-deep:#B08B5E;
+    --paper:#F3EEE7; --ink:#0B0A10; --ease:cubic-bezier(.22,.61,.36,1);
+    --safe-b:env(safe-area-inset-bottom,0px);
+    --safe-t:env(safe-area-inset-top,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;margin:0}
+  body{
+    background:radial-gradient(120% 80% at 50% 0%,#171325 0%,#0B0A10 55%,#07060B 100%);
+    color:var(--paper);font-family:-apple-system,"PingFang SC","Noto Sans CJK SC",sans-serif;
+    display:flex;flex-direction:column;overflow:hidden;
+    padding-top:var(--safe-t);
+  }
+  /* ── 自定义壁纸（铺满整个外壳，含顶栏与底部导航） ── */
+  #wallBg{
+    position:fixed;inset:0;z-index:0;display:none;
+    background:#0B0A10 center/cover no-repeat;
+  }
+  #wallVeil{
+    position:fixed;inset:0;z-index:1;display:none;pointer-events:none;
+    background:linear-gradient(180deg,rgba(6,6,10,.34),rgba(4,4,7,.58));
+  }
+  body.wall-on #wallBg,body.wall-on #wallVeil{display:block}
+  body.light #wallVeil{background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(252,246,236,.78))}
+  body.wall-on.light #wallVeil{background:linear-gradient(180deg,rgba(255,255,255,.30),rgba(252,246,236,.50))}
+  .top,.content,.nav{position:relative;z-index:2}
+  body.wall-on .top{
+    background:linear-gradient(180deg,#0B0A10 30%,rgba(11,10,16,.90));
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  body.light.wall-on .top{
+    background:linear-gradient(180deg,#FAF6EE 30%,rgba(250,246,238,.92));
+    border-bottom:1px solid rgba(40,32,20,.06);
+  }
+  body.wall-on .nav{
+    background:linear-gradient(180deg,rgba(10,9,15,.88),#0B0A10 70%);
+    border-top:1px solid rgba(255,255,255,.07);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+  body.light.wall-on .nav{
+    background:linear-gradient(180deg,rgba(250,246,238,.92),#FAF6EE 70%);
+    border-top:1px solid rgba(40,32,20,.08);
+    -webkit-backdrop-filter:none;
+    backdrop-filter:none;
+  }
+  body.wall-on .nav button{text-shadow:0 1px 10px rgba(0,0,0,.55)}
+  body.light.wall-on .nav button{text-shadow:0 1px 10px rgba(255,255,255,.95)}
+  body.wall-on .nav button.on{text-shadow:0 1px 12px rgba(0,0,0,.6)}
+  #frame{background:transparent}
+
+  /* ── 进入动画 ── */
+  #splash{
+    position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 50% 45%,#0d0b16 0%,#070610 55%,#000 100%);
+    transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease);
+  }
+  #splash.out{opacity:0;transform:scale(1.03);filter:blur(6px);pointer-events:none}
+  .sp-scan{
+    position:absolute;inset:0;pointer-events:none;opacity:.35;
+    background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px);
+    animation:spScan 7s linear infinite;
+  }
+  @keyframes spScan{from{background-position-y:0}to{background-position-y:80px}}
+  .sp-rays{
+    position:absolute;inset:-30%;pointer-events:none;opacity:.16;
+    background:conic-gradient(from 0deg,
+      rgba(228,194,154,0) 0deg, rgba(228,194,154,.32) 28deg, rgba(228,194,154,0) 88deg,
+      rgba(156,140,234,0) 176deg, rgba(156,140,234,.24) 238deg, rgba(156,140,234,0) 300deg);
+    filter:blur(30px);animation:spRays 36s linear infinite;
+  }
+  @keyframes spRays{to{transform:rotate(1turn)}}
+
+  .sp-core{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 22px}
+  .sp-sigil{width:96px;height:96px}
+  .sp-ring{position:absolute;top:0;left:50%;margin-left:-48px;width:96px;height:96px;border-radius:50%;
+    border:1px solid rgba(228,194,154,.16);animation:spRing 3.8s var(--ease) infinite}
+  .sp-ring.r2{margin-left:-68px;width:136px;height:136px;top:-20px;border-color:rgba(156,140,234,.12);animation-delay:1.4s}
+  @keyframes spRing{0%{transform:scale(.85);opacity:0}40%{opacity:1}100%{transform:scale(1.3);opacity:0}}
+  .sp-orbit{position:absolute;top:-34px;left:50%;margin-left:-68px;width:136px;height:136px;border-radius:50%;
+    animation:spOrbit 10s linear infinite;pointer-events:none}
+  .sp-orbit i{position:absolute;top:-1.5px;left:50%;margin-left:-1.75px;width:3.5px;height:3.5px;border-radius:50%;
+    background:#f7e8d2;box-shadow:0 0 12px rgba(247,232,210,.95),0 0 4px #fff}
+  @keyframes spOrbit{to{transform:rotate(1turn)}}
+
+  .sp-word{display:flex;gap:.26em;margin-top:34px;
+    font-family:var(--serif);font-size:31px;letter-spacing:.24em;color:var(--gold-lit);
+    text-shadow:0 0 26px rgba(228,194,154,.38)}
+  .sp-word span{opacity:0;transform:translateY(9px);
+    animation:spIn .9s var(--ease) forwards;animation-delay:calc(var(--i,0)*.08s)}
+  .sp-word span:nth-child(1){--i:0}.sp-word span:nth-child(2){--i:1}
+  .sp-word span:nth-child(3){--i:2}.sp-word span:nth-child(4){--i:3}
+  .sp-word span:nth-child(5){--i:4}.sp-word span:nth-child(6){--i:5}
+  @keyframes spIn{to{opacity:1;transform:none}}
+
+  .sp-slogan{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:22px;
+    font-family:var(--serif);text-align:center}
+  .sp-slogan span{opacity:0;transform:translateY(8px);
+    animation:spIn 1.2s var(--ease) forwards}
+  .sp-l1{animation-delay:.68s!important;font-size:14px;letter-spacing:.18em;color:rgba(243,238,231,.76)}
+  .sp-l2{animation-delay:1s!important;font-size:12.5px;letter-spacing:.2em;color:rgba(243,238,231,.58)}
+  .sp-slogan em{
+    font-style:normal;letter-spacing:.04em;
+    background:linear-gradient(100deg,#fae9ce,#e0b98f 46%,#9c8cea 96%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 14px rgba(228,194,154,.4));
+  }
+  .sp-rule{width:0!important;height:1px;opacity:1!important;transform:none!important;
+    background:linear-gradient(90deg,transparent,rgba(228,194,154,.7),transparent);
+    animation:spRule 1.4s .9s var(--ease) forwards!important}
+  @keyframes spRule{to{width:230px}}
+  .sp-hint{margin-top:30px;font-size:9.5px;letter-spacing:.22em;color:rgba(243,238,231,.22);
+    opacity:0;animation:spIn 1s 1.5s ease forwards}
+
+  /* ── 白昼模式（外壳） ── */
+  body.light{
+    background:radial-gradient(120% 80% at 50% 0%,#FDFCF9 0%,#F4EEE3 55%,#EAE1D1 100%);
+    color:#221C14;
+  }
+  body.light .brand{color:#8A5A22}
+  body.light .brand i{background:#B07C3E;box-shadow:0 0 8px rgba(176,124,62,.6)}
+  body.light .top-sub{color:rgba(34,28,20,.4)}
+  body.light .hero-title{color:#8A5A22}
+  body.light .hero-sub{color:rgba(34,28,20,.72)}
+  body.light .card{background:rgba(255,255,255,.8);border-color:rgba(40,32,20,.1)}
+  body.light .card:active{background:rgba(176,124,62,.12)}
+  body.light .card b{color:#2A2116}
+  body.light .card span{color:rgba(34,28,20,.68)}
+  body.light .tip{color:rgba(34,28,20,.58)}
+  body.light .nav{
+    background:linear-gradient(180deg,rgba(255,255,255,.66),rgba(247,242,232,.98));
+    border-top-color:rgba(40,32,20,.1);
+  }
+  body.light .nav button{color:rgba(34,28,20,.45)}
+  body.light .nav button.on{color:#8A5A22}
+  body.light #frame{background:#FAF6EF}
+
+  /* ── 顶栏 ── */
+  .top{
+    flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px 8px;
+  }
+  .brand{font-size:15px;letter-spacing:.42em;color:var(--gold-lit);display:flex;align-items:center;gap:8px}
+  .brand i{width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);display:inline-block}
+  .top-sub{font-size:10px;letter-spacing:.2em;color:rgba(243,238,231,.35)}
+
+  /* ── 内容区 ── */
+  .content{flex:1;min-height:0;position:relative}
+  #home{position:absolute;inset:0;overflow-y:auto;padding:6px 20px 18px}
+  .hero{margin:18px 0 26px;text-align:center}
+  .hero-sigil{width:74px;height:74px;margin:0 auto 16px;opacity:.9}
+  .hero-title{font-size:30px;letter-spacing:.34em;color:var(--gold-lit);font-weight:300;padding-left:.34em}
+  .hero-sub{margin-top:8px;font-size:11px;letter-spacing:.3em;color:rgba(243,238,231,.78)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+  .card{
+    border-radius:16px;padding:18px 16px;text-align:left;cursor:pointer;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.07);
+    display:flex;flex-direction:column;gap:10px;transition:.2s var(--ease);
+  }
+  .card:active{transform:scale(.97);background:rgba(228,194,154,.12)}
+  .card svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.6}
+  .card b{font-size:14px;font-weight:500;letter-spacing:.06em}
+  .card span{font-size:10.5px;color:rgba(243,238,231,.75);letter-spacing:.04em}
+  body.wall-on .card b,body.wall-on .card span,body.wall-on .hero-sub,body.wall-on .tip{text-shadow:0 1px 12px rgba(0,0,0,.7)}
+  body.light.wall-on .card b,body.light.wall-on .card span,body.light.wall-on .hero-sub,body.light.wall-on .tip{text-shadow:0 1px 10px rgba(255,255,255,.95)}
+  .tip{margin-top:22px;text-align:center;font-size:10.5px;letter-spacing:.08em;color:rgba(243,238,231,.6)}
+
+  /* ── 播放器 iframe ── */
+  #frameWrap{position:absolute;inset:0;display:none}
+  #frame{width:100%;height:100%;border:0;display:block;background:#0B0A10}
+
+  /* ── 底部导航 ── */
+  .nav{
+    flex:0 0 auto;display:flex;align-items:stretch;justify-content:space-around;
+    padding:6px 6px calc(6px + var(--safe-b));
+    background:linear-gradient(180deg,rgba(12,11,18,.72),rgba(7,6,11,.96));
+    border-top:1px solid rgba(255,255,255,.06);
+    backdrop-filter:blur(18px);
+  }
+  .nav button{
+    flex:1;background:none;border:0;color:rgba(243,238,231,.42);
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:8px 2px 6px;font-size:10px;letter-spacing:.06em;font-family:inherit;
+    transition:color .2s var(--ease);
+  }
+  .nav button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6}
+  .nav button.on{color:var(--gold-lit)}
+  .nav button.on svg{filter:drop-shadow(0 0 6px rgba(228,194,154,.45))}
+</style>
+</head>
+<body>
+
+<div id="wallBg"></div>
+<div id="wallVeil"></div>
+
+<!-- ══════════ 进入动画（Luvsic 邂逅） ══════════ -->
+<div id="splash">
+  <div class="sp-rays"></div>
+  <div class="sp-scan"></div>
+  <div class="sp-core">
+    <svg class="sp-sigil" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <linearGradient id="spg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f3ddbe"/><stop offset="55%" stop-color="#e0b98f"/>
+          <stop offset="100%" stop-color="#8d7bdd"/>
+        </linearGradient>
+      </defs>
+      <circle cx="60" cy="60" r="43" fill="none" stroke="url(#spg)" stroke-width="0.7" opacity=".55"/>
+      <circle cx="60" cy="60" r="34" fill="none" stroke="url(#spg)" stroke-width="0.5" opacity=".3" stroke-dasharray="2 7"/>
+      <path d="M60 26 L86 60 L60 94 L34 60 Z" fill="none" stroke="url(#spg)" stroke-width="1.1"/>
+      <path d="M60 42 L74 60 L60 78 L46 60 Z" fill="url(#spg)" opacity=".16"/>
+      <circle cx="60" cy="60" r="2.4" fill="#f7e8d2"/>
+    </svg>
+    <span class="sp-ring"></span>
+    <span class="sp-ring r2"></span>
+    <span class="sp-orbit"><i></i></span>
+
+    <div class="sp-word"><span>L</span><span>U</span><span>V</span><span>S</span><span>I</span><span>C</span></div>
+    <div class="sp-slogan">
+      <span class="sp-l1">进入 <em>Luvsic</em></span>
+      <span class="sp-rule"></span>
+      <span class="sp-l2">邂逅那些你 <em>miss</em> 的音乐</span>
+    </div>
+    <div class="sp-hint">正在点亮你的曲库 ···</div>
+  </div>
+</div>
+
+<div class="top">
+  <div class="brand">LUVSIC<i></i></div>
+  <div class="top-sub">手机版</div>
+</div>
+
+<div class="content">
+  <!-- 主界面 -->
+  <div id="home">
+    <div class="hero">
+      <svg class="hero-sigil" viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f3ddbe"/><stop offset="55%" stop-color="#e0b98f"/><stop offset="100%" stop-color="#8d7bdd"/>
+          </linearGradient>
+        </defs>
+        <circle cx="60" cy="60" r="43" fill="none" stroke="url(#g1)" stroke-width="0.7" opacity=".5"/>
+        <circle cx="60" cy="60" r="34" fill="none" stroke="url(#g1)" stroke-width="0.5" opacity=".28" stroke-dasharray="2 7"/>
+        <path d="M60 26 L86 60 L60 94 L34 60 Z" fill="none" stroke="url(#g1)" stroke-width="1.1"/>
+        <path d="M60 42 L74 60 L60 78 L46 60 Z" fill="url(#g1)" opacity=".16"/>
+        <circle cx="60" cy="60" r="2.4" fill="#f7e8d2"/>
+      </svg>
+      <div class="hero-title">LUVSIC</div>
+      <div class="hero-sub">在这里，听你的歌</div>
+    </div>
+
+    <div class="grid">
+      <div class="card" data-go="music">
+        <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg>
+        <b>音乐</b><span>正在播放 / 歌词</span>
+      </div>
+      <div class="card" data-go="lib">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+        <b>曲库</b><span>本地歌曲 / 歌单</span>
+      </div>
+      <div class="card" data-go="search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="M15.8 15.8L21 21"/></svg>
+        <b>搜索音乐</b><span>本地曲库</span>
+      </div>
+      <div class="card" data-go="settings">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg>
+        <b>设置</b><span>音效 / 播放 / 外观</span>
+      </div>
+      <div class="card" data-go="friends">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17.5" cy="9.5" r="2.4"/><path d="M15.5 20c.2-2.6 2-4.2 4.5-4.2"/></svg>
+        <b>好友与排行</b><span>好友码 / 听歌时长榜</span>
+      </div>
+      <div class="card" id="mAdminCard" data-go="admin" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.4-2.9 7.6-7 9-4.1-1.4-7-4.6-7-9V6z"/><path d="M9.5 12.2l1.8 1.8 3.4-3.6"/></svg>
+        <b>账号管理</b><span>账号 / 备注 / 登录权限</span>
+      </div>
+    </div>
+
+    <div class="tip">LUVSIC · 一台在你口袋里的播放器</div>
+  </div>
+
+  <!-- 播放器 / 曲库 / 搜索 / 设置 都复用桌面版界面 -->
+  <div id="frameWrap"><iframe id="frame" src="about:blank"></iframe></div>
+</div>
+
+<nav class="nav">
+  <button data-tab="home">
+    <svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg><span>首页</span>
+  </button>
+  <button data-tab="music">
+    <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg><span>音乐</span>
+  </button>
+  <button data-tab="lib">
+    <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>曲库</span>
+  </button>
+  <button data-tab="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.4"/><path d="M15.8 15.8L21 21"/></svg><span>搜索</span>
+  </button>
+  <button data-tab="settings">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6"/></svg><span>设置</span>
+  </button>
+</nav>
+
+<script>
+(function () {
+  'use strict';
+  var frame = document.getElementById('frame');
+  var wrap = document.getElementById('frameWrap');
+  var home = document.getElementById('home');
+  var loaded = false;
+  var VIEW = { music: 'play', lib: 'lib', settings: 'settings',
+               friends: 'friends', admin: 'admin' };
+  var THEME = 'dark';
+
+  /* 内嵌页面（app.js）判断出当前账号是管理员后，通知外壳显示首页的「账号管理」卡片 */
+  window.__SHELL_ADMIN = function (on) {
+    var c = document.getElementById('mAdminCard');
+    if (c) c.style.display = on ? '' : 'none';
+  };
+
+  /* 首页没加载 iframe 时，外壳自己问一次接口，决定管理员卡片显不显示 */
+  function syncAdminCard() {
+    try {
+      fetch('/api?name=sync_status', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: '[]'
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        window.__SHELL_ADMIN(!!(d && d.isAdmin));
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
+  /* 每次打开 App 自动检查更新：没有新版本不打扰；有新版先弹窗问「是否现在安装」，
+     用户点了才下载，下载完成由后端弹出系统安装界面。 */
+  function updApi(name, args) {
+    return fetch('/api?name=' + name, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(args || [])
+    }).then(function (r) { return r.json(); });
+  }
+  function showUpdateDialog(info) {
+    var mask = document.getElementById('updMask');
+    if (!mask) return;
+    document.getElementById('updTitle').textContent = '发现新版本 v' + (info.latest || '');
+    document.getElementById('updMsg').textContent =
+      (info.notes ? info.notes + '。' : '') + '是否现在安装？';
+    mask.style.display = 'flex';
+    document.getElementById('updLater').onclick = function () {
+      mask.style.display = 'none';
+    };
+    document.getElementById('updGo').onclick = function () {
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = '正在下载…';
+      var fileName = String(info.file || '').split('/').pop();
+      updApi('download_update', [info.url || '', fileName]).then(function (d) {
+        if (d && d.ok) {
+          btn.textContent = '下载完成';
+          document.getElementById('updMsg').textContent =
+            '新版本已开始下载，完成后会自动弹出安装界面；如果没弹，下拉通知栏点「Luvsic 新版本已下载」。';
+        } else {
+          btn.disabled = false;
+          btn.textContent = '立即安装';
+          document.getElementById('updMsg').textContent =
+            '下载失败：' + ((d && d.msg) || '请稍后重试');
+        }
+      }).catch(function () {
+        btn.disabled = false;
+        btn.textContent = '立即安装';
+      });
+    };
+  }
+  function autoCheckUpdate(retry) {
+    try {
+      updApi('check_update').then(function (r) {
+        if (!(r && r.ok)) {
+          if (!retry) setTimeout(function () { autoCheckUpdate(true); }, 6000);
+          return;
+        }
+        if (!r.hasUpdate) return; // 没有新版本：什么都不做
+        showUpdateDialog(r);
+      }).catch(function () {
+        if (!retry) setTimeout(function () { autoCheckUpdate(true); }, 6000);
+      });
+    } catch (e) {}
+  }
+  setTimeout(function () { autoCheckUpdate(false); }, 3000);
+
+  function applyShellTheme(t) {
+    THEME = t === 'light' ? 'light' : 'dark';
+    document.body.classList.toggle('light', THEME === 'light');
+    try { localStorage.setItem('luvsic-theme', THEME); } catch (e) {}
+  }
+
+  try { applyShellTheme(localStorage.getItem('luvsic-theme') || 'dark'); } catch (e) {}
+  fetch('/api?name=get_config', { method: 'POST', body: '[]' })
+    .then(function (r) { return r.json(); })
+    .then(function (cfg) { if (cfg && cfg.theme) applyShellTheme(cfg.theme); })
+    .catch(function () {});
+
+  // 自定义壁纸：外壳顶栏/底栏也跟着换；用户点了「系统壁纸」就记住关闭状态
+  function wallEnabled() {
+    try { return localStorage.getItem('luvsic-wall-on') !== '0'; } catch (e) { return true; }
+  }
+  function setWallEnabled(on) {
+    try { localStorage.setItem('luvsic-wall-on', on ? '1' : '0'); } catch (e) {}
+  }
+  function hideShellWall() {
+    var el = document.getElementById('wallBg');
+    if (el) { el.style.backgroundImage = ''; el.style.filter = ''; }
+    document.body.classList.remove('wall-on');
+  }
+  function applyShellWall() {
+    if (!wallEnabled()) { hideShellWall(); return; }
+    fetch('/wall/custom.jpg', { method: 'HEAD' }).then(function (r) {
+      if (!r || !r.ok) { hideShellWall(); return; }
+      var el = document.getElementById('wallBg');
+      if (el) el.style.backgroundImage = 'url("/wall/custom.jpg?t=' + Date.now() + '")';
+      document.body.classList.add('wall-on');
+    }).catch(function () {});
+  }
+  function applyWallFilter(f) {
+    if (!f) return;
+    var el = document.getElementById('wallBg');
+    if (el) el.style.filter = f;
+    try { localStorage.setItem('luvsic-wall-filter', f); } catch (e) {}
+  }
+  try { applyWallFilter(localStorage.getItem('luvsic-wall-filter') || ''); } catch (e) {}
+  applyShellWall();
+  window.__SHELL_WALL_REFRESH = applyShellWall;
+  function pushVersion() {
+    try {
+      if (!window.LuvsicNative || !window.LuvsicNative.appVersion) return;
+      var v = window.LuvsicNative.appVersion();
+      if (!v) return;
+      frame.contentWindow.postMessage({ type: 'luvsic-version', version: v }, '*');
+    } catch (e) {}
+  }
+  window.addEventListener('message', function (e) {
+    if (e.data && e.data.type === 'luvsic-theme') applyShellTheme(e.data.theme);
+    if (e.data && e.data.type === 'luvsic-lyrcolor') {
+      try {
+        if (window.LuvsicNative && window.LuvsicNative.setLyricColor) {
+          window.LuvsicNative.setLyricColor(e.data.color || '');
+        }
+      } catch (err) {}
+    }
+    if (e.data && e.data.type === 'luvsic-lyrsize') {
+      try {
+        if (window.LuvsicNative && window.LuvsicNative.setLyricSize) {
+          window.LuvsicNative.setLyricSize(e.data.size || 0);
+        }
+      } catch (err) {}
+    }
+    if (e.data && e.data.type === 'luvsic-wall') {
+      setWallEnabled(true);
+      applyShellWall();
+      if (e.data.filter) applyWallFilter(e.data.filter);
+    }
+    if (e.data && e.data.type === 'luvsic-wall-off') {
+      setWallEnabled(false);
+      hideShellWall();
+    }
+    if (e.data && e.data.type === 'luvsic-req-version') pushVersion();
+    if (e.data && e.data.type === 'luvsic-media') {
+      try {
+        if (window.LuvsicNative && window.LuvsicNative.updatePlayback) {
+          window.LuvsicNative.updatePlayback(JSON.stringify(e.data.state || {}));
+        }
+      } catch (err) {}
+    }
+  });
+
+  function callView(tab) {
+    var w = frame.contentWindow;
+    console.log('LUV callView', tab, '->', VIEW[tab], 'bridge=' + !!(w && w.__LUV));
+    if (w && w.__LUV) w.__LUV.view(VIEW[tab]);
+  }
+
+  function ensureFrame(tab) {
+    if (!loaded) {
+      loaded = true;
+      var deepQ = '', deepBatch = '', deepLimit = '';
+      try {
+        var sq = new URLSearchParams(location.search);
+        deepQ = sq.get('q') || '';
+        deepLimit = sq.get('limit') || '';
+      } catch (e) {}
+      frame.src = 'index.html?android=1'
+        + (deepQ ? '&q=' + encodeURIComponent(deepQ) : '')
+        + (deepLimit ? '&limit=' + encodeURIComponent(deepLimit) : '');
+      frame.addEventListener('load', function () {
+        try {
+          frame.contentWindow.__LUV.hideChrome();
+        } catch (e) {}
+        try {
+          if (frame.contentWindow.__LUV && typeof frame.contentWindow.__LUV.setTheme === 'function') {
+            frame.contentWindow.__LUV.setTheme(THEME);
+          }
+        } catch (e) {}
+        callView(tab);
+        try { pushVersion(); } catch (e) {}
+      }, { once: true });
+    } else if (frame.contentWindow && frame.contentWindow.__LUV) {
+      callView(tab);
+    } else {
+      frame.addEventListener('load', function () { callView(tab); }, { once: true });
+    }
+  }
+
+  function apply(tab) {
+    console.log('LUV apply', tab, 'hash=' + location.hash);
+    if (!tab || tab === 'home' || !VIEW[tab]) {
+      wrap.style.display = 'none';
+      home.style.display = 'block';
+      tab = 'home';
+    } else {
+      home.style.display = 'none';
+      wrap.style.display = 'block';
+      ensureFrame(tab);
+    }
+    document.querySelectorAll('.nav button').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-tab') === tab);
+    });
+    document.querySelectorAll('.card').forEach(function (c) {
+      c.classList.toggle('on', c.getAttribute('data-go') === tab);
+    });
+  }
+
+  function go(tab) {
+    if (location.hash === '#' + tab) apply(tab);
+    else location.hash = tab;
+  }
+
+  document.querySelectorAll('.nav button').forEach(function (b) {
+    b.addEventListener('click', function () { go(b.getAttribute('data-tab')); });
+  });
+  document.querySelectorAll('.card').forEach(function (c) {
+    c.addEventListener('click', function () { go(c.getAttribute('data-go')); });
+  });
+  window.addEventListener('hashchange', function () {
+    apply((location.hash || '#home').slice(1));
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) {
+      try { frame.contentWindow.__LUV.hideChrome(); callView((location.hash || '#home').slice(1)); } catch (e) {}
+    }
+  });
+
+  if (!location.hash) location.replace('#home');
+  apply((location.hash || '#home').slice(1));
+  try { syncAdminCard(); } catch (e) {}
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { try { syncAdminCard(); } catch (e) {} }
+  });
+
+  // 进入动画：2.6s 后淡出，3.6s 后移除
+  var splash = document.getElementById('splash');
+  if (splash) {
+    setTimeout(function () { splash.classList.add('out'); }, 2600);
+    setTimeout(function () {
+      if (splash.parentNode) splash.parentNode.removeChild(splash);
+    }, 3600);
+  }
+})();
+</script>
+  <!-- 更新提示弹窗：有新版才显示，无新版不打扰 -->
+  <div id="updMask" style="position:fixed;inset:0;z-index:9900;display:none;background:rgba(0,0,0,.62);
+       -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+    <div style="width:84%;max-width:420px;background:#1b1a1f;border:1px solid rgba(228,194,154,.22);
+         border-radius:18px;padding:22px 20px;box-shadow:0 18px 50px rgba(0,0,0,.5)">
+      <div id="updTitle" style="font-size:15.5px;font-weight:600;color:#f3eee7;margin-bottom:10px">发现新版本</div>
+      <div id="updMsg" style="font-size:12.5px;line-height:1.75;color:rgba(243,238,231,.76);margin-bottom:18px"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button id="updLater" style="border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(243,238,231,.7);
+             font-size:13px;padding:9px 16px;border-radius:999px">稍后</button>
+        <button id="updGo" style="border:0;background:#e4c29a;color:#20180f;font-size:13px;font-weight:600;
+             padding:9px 18px;border-radius:999px">立即安装</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
