@@ -208,12 +208,16 @@ public class HubSync {
             JSONObject s = readJson(new File(dir, SYNC_FILE), "{}");
             String sid = s.optString("userId", "");
             if (sid.matches("\\d{8}")) {
-                try {
-                    u.put("id", sid);
-                    writeJson(new File(dir, USER_FILE), u);
-                } catch (Exception ignored) {
-                }
                 id = sid;
+            } else {
+                // 都没用：生成一个 8 位数字 ID（好友码/排行榜要求 8 位）
+                id = String.format(java.util.Locale.US, "%08d",
+                        (int) (Math.random() * 90_000_000L) + 10_000_000);
+            }
+            try {
+                u.put("id", id);
+                writeJson(new File(dir, USER_FILE), u);
+            } catch (Exception ignored) {
             }
         }
         return id;
